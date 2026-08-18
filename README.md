@@ -1,22 +1,23 @@
-# Personal portfolio
+# Kenny's portfolio
 
-A responsive one-page portfolio for a designer and developer. It includes a
-strong editorial landing section, selected work, an about section,
-capabilities, contact links, and a custom social sharing card.
+A simple, personal portfolio for a computer science student, hidden behind an
+interactive Rubik's cube challenge. Visitors can solve the cube themselves or
+use the automatic solver, then continue into the rounded-border portfolio.
 
-## Make it yours
+## Personalize the draft
 
-Most content lives in `app/page.tsx`. Replace these starter details before
-sharing the site:
+The visible content lives in `app/page.tsx`. Before publishing, replace:
 
-- `Your Name`, `YN.`, and `Your City`
-- `hello@example.com`
+- `[your internship / role]`
+- the two placeholder project cards
+- the bracketed personal detail in the About section
+- `you@example.com`
 - the GitHub and LinkedIn profile links
-- the three demo projects and their skills
-- the short biography and availability line
+- the resume placeholder
 
-Update the browser and social-sharing title in `app/layout.tsx` and
-`app/page.tsx`. Replace `public/og.png` after changing the name or headline.
+The gate handoff lives in `app/CubeGate.tsx`, while the complete cube interaction
+lives in `public/cube-gate.html`. Colors, layout, typography, and responsive
+styles for the portfolio live in `app/globals.css`.
 
 ## Run locally
 
@@ -29,21 +30,12 @@ npm run dev
 
 Open `http://localhost:3000`.
 
-## Verify a production build
+## Check a production build
 
 ```bash
 npm run build
 npm test
 ```
 
-## Project structure
-
-- `app/page.tsx` — portfolio content and social metadata
-- `app/globals.css` — layout, colors, typography, and responsive behavior
-- `public/og.png` — social sharing image
-- `.openai/hosting.json` — Sites hosting configuration
-
-## Publish updates
-
-Commit and push changes to the `main` branch. The source is designed to stay
-in GitHub while the live build is published through Sites.
+The GitHub repository and hosted draft should remain private until the real
+content and links have been added.

@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Kenny / entry</title>
+
+<!--
+  ============================================================================
+  CUSTOMIZE: search for "EDIT ME".
+  DEPLOY: rename to index.html, put at repo root, Settings > Pages.
+  TYPE:   Space Grotesk (display) + JetBrains Mono (everything else).
+  ============================================================================
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#000;
+    --ink:#f2f2f2;
+    --ink-dim:#7d7d7d;
+    --accent:#ffb020;
+    --border:#2b2b2b;
+    --display:'Space Grotesk', sans-serif;
+    --mono:'JetBrains Mono', ui-monospace, monospace;
+  }
+
+  *{ box-sizing:border-box; }
+
+  html{ scroll-behavior:smooth; }
+
+  html,body{
+    margin:0; padding:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--mono);
+    -webkit-text-size-adjust:100%;
+  }
+
+  body.locked{ overflow:hidden; height:100%; position:fixed; width:100%; }
+  body.locked #portfolio{ display:none; }
+
+  #bg-canvas{
+    position:fixed; inset:0;
+    width:100%; height:100%;
+    z-index:0; display:block;
+    touch-action:none;
+  }
+  body:not(.locked) #bg-canvas{ display:none; }
+
+  /* ---------- Lock screen ---------- */
+
+  #lock-screen{
+    position:fixed; inset:0;
+    z-index:10;
+    display:flex;
+    align-items:center;
+    transition:opacity 0.6s ease;
+    pointer-events:none;
+  }
+  #lock-screen.unlocking{ opacity:0; }
+
+  #left-col{
+    pointer-events:auto;
+    width:min(46%, 470px);
+    padding:0 0 0 clamp(24px, 6vw, 84px);
+  }
+
+  #left-col h1{
+    font-family:var(--display);
+    font-weight:700;
+    font-size:clamp(2rem, 4.8vw, 3.5rem);
+    line-height:1.05;
+    letter-spacing:-0.025em;
+    margin:0 0 14px;
+  }
+
+  #left-col .sub{
+    font-family:var(--mono);
+    font-weight:500;
+    font-size:clamp(0.76rem, 1.05vw, 0.9rem);
+    letter-spacing:0.02em;
+    color:var(--ink-dim);
+    line-height:1.65;
+    margin:0 0 24px;
+  }
+
+  #status-msg{
+    font-family:var(--mono);
+    font-weight:500;
+    font-size:0.75rem;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin:0 0 14px;
+    min-height:1.1em;
+    opacity:0;
+    transition:opacity 0.3s ease;
+  }
+  #status-msg.show{ opacity:1; }
+
+  #btn-col{ display:flex; flex-direction:column; gap:9px; max-width:250px; }
+
+  .action-btn{
+    font-family:var(--mono);
+    font-weight:500;
+    font-size:0.72rem;
+    letter-spacing:0.11em;
+    text-transform:uppercase;
+    padding:12px 16px;
+    border-radius:5px;
+    cursor:pointer;
+    background:transparent;
+    border:1px solid var(--border);
+    color:var(--ink);
+    text-align:left;
+    transition:border-color 0.15s ease, color 0.15s ease;
+  }
+  .action-btn:hover:not(:disabled){ border-color:var(--ink); }
+  .action-btn:disabled{ opacity:0.3; cursor:default; }
+
+  #scramble-btn{ color:var(--accent); border-color:rgba(255,176,32,0.45); }
+  #giveup-btn{ color:var(--ink-dim); }
+  #giveup-btn:hover:not(:disabled){ color:var(--ink); }
+
+  /* Scramble + Continue only appear once the cube is solved */
+  .action-btn.hidden{ display:none; }
+  #continue-btn{
+    color:#000;
+    background:var(--accent);
+    border-color:var(--accent);
+    font-weight:700;
+  }
+  #continue-btn:hover{ background:#ffc24d; border-color:#ffc24d; }
+
+  /* ---------- Instructions ---------- */
+
+  #instructions{
+    pointer-events:auto;
+    position:fixed;
+    left:clamp(24px, 6vw, 84px);
+    bottom:clamp(24px, 5vh, 60px);
+    max-width:350px;
+    background:#0c0c0c;
+    border:1px solid var(--border);
+    border-radius:6px;
+    padding:16px 18px;
+    display:none;
+    z-index:12;
+  }
+  #instructions.open{ display:block; }
+  #instructions h3{
+    font-family:var(--mono); font-weight:700;
+    font-size:0.7rem; letter-spacing:0.12em; text-transform:uppercase;
+    color:var(--accent); margin:0 0 10px;
+  }
+  #instructions ul{ margin:0; padding-left:16px; }
+  #instructions li{
+    font-family:var(--mono); font-weight:400;
+    font-size:0.75rem; color:#c4c4c4; line-height:1.75; margin-bottom:6px;
+  }
+  #instructions .close{
+    position:absolute; top:8px; right:11px;
+    background:none; border:none; color:var(--ink-dim);
+    font-size:1.2rem; cursor:pointer; line-height:1; padding:0;
+  }
+
+  /* ---------- Orientation view cube ---------- */
+
+  #orientation-gizmo{
+    position:fixed;
+    top:clamp(24px, 5vh, 52px);
+    right:clamp(24px, 5vw, 68px);
+    z-index:14;
+    width:94px;
+    pointer-events:auto;
+    text-align:center;
+  }
+  #orientation-gizmo .gizmo-label{
+    display:block;
+    margin-bottom:10px;
+    color:var(--ink-dim);
+    font-family:var(--mono);
+    font-size:0.56rem;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+  }
+  .gizmo-scene{
+    display:grid;
+    place-items:center;
+    width:94px;
+    height:82px;
+    perspective:260px;
+  }
+  #gizmo-cube{
+    position:relative;
+    width:48px;
+    height:48px;
+    transform-style:preserve-3d;
+  }
+  .gizmo-face{
+    position:absolute;
+    inset:0;
+    display:grid;
+    place-items:center;
+    padding:0;
+    border:1px solid #777;
+    color:#eee;
+    background:rgba(18,18,18,0.94);
+    font-family:var(--mono);
+    font-size:0.43rem;
+    font-weight:700;
+    letter-spacing:0.02em;
+    cursor:pointer;
+    backface-visibility:hidden;
+  }
+  .gizmo-face:hover,
+  .gizmo-face:focus-visible{ background:var(--accent); color:#000; border-color:var(--accent); }
+  .gizmo-front{ transform:translateZ(24px); }
+  .gizmo-back{ transform:rotateY(180deg) translateZ(24px); }
+  .gizmo-right{ transform:rotateY(90deg) translateZ(24px); }
+  .gizmo-left{ transform:rotateY(-90deg) translateZ(24px); }
+  .gizmo-top{ transform:rotateX(90deg) translateZ(24px); }
+  .gizmo-bottom{ transform:rotateX(-90deg) translateZ(24px); }
+  #snap-view-btn{
+    margin-top:8px;
+    padding:5px 8px;
+    border:1px solid var(--border);
+    border-radius:4px;
+    color:var(--ink-dim);
+    background:#080808;
+    font-family:var(--mono);
+    font-size:0.5rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    cursor:pointer;
+  }
+  #snap-view-btn:hover,
+  #snap-view-btn:focus-visible{ color:var(--ink); border-color:var(--ink-dim); }
+
+  /* ---------- Mobile ---------- */
+
+  @media (max-width:860px){
+    #lock-screen{
+      flex-direction:column;
+      align-items:flex-start;
+      justify-content:flex-start;
+      padding:7vh 0 0;
+    }
+    #left-col{ width:100%; padding:0 24px; }
+    #btn-col{ max-width:none; flex-direction:row; flex-wrap:wrap; }
+    .action-btn{ flex:1 1 auto; text-align:center; padding:12px 14px; }
+    #continue-btn{ flex-basis:100%; }
+    #instructions{ left:16px; right:16px; max-width:none; bottom:16px; }
+    #orientation-gizmo{ top:auto; right:14px; bottom:18px; transform:scale(0.82); transform-origin:bottom right; }
+  }
+
+  /* ---------- Portfolio ---------- */
+
+  #portfolio{
+    position:relative; z-index:5;
+    max-width:1000px; margin:0 auto;
+    padding:20px 20px 60px;
+  }
+
+  #nav{
+    display:flex; align-items:center; justify-content:space-between;
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:14px 22px;
+    margin-bottom:16px;
+    background:rgba(0,0,0,0.6);
+    position:sticky; top:14px; z-index:20;
+    backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
+  }
+  .nav-name{
+    font-family:var(--display); font-weight:700;
+    font-size:1.05rem; letter-spacing:-0.02em;
+  }
+  .nav-links{ display:flex; gap:22px; }
+  .nav-links a{
+    font-family:var(--mono); font-weight:500; font-size:0.72rem;
+    letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--ink-dim); text-decoration:none;
+    transition:color 0.15s ease;
+  }
+  .nav-links a:hover{ color:var(--accent); }
+
+  .card{
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:clamp(20px, 3.5vw, 40px);
+    margin-bottom:16px;
+    scroll-margin-top:84px;
+  }
+
+  .photo-row{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:14px;
+    margin-bottom:36px;
+  }
+  .photo{
+    margin:0;
+    aspect-ratio:16/10;
+    border-radius:10px;
+    overflow:hidden;
+    background:#0d0d0d;
+    border:1px solid var(--border);
+    display:flex; align-items:center; justify-content:center;
+    position:relative;
+  }
+  .photo img{
+    width:100%; height:100%;
+    object-fit:cover;
+    display:block;
+    position:absolute; inset:0;
+  }
+  .photo figcaption{
+    font-family:var(--mono); font-size:0.62rem;
+    color:#3d3d3d; letter-spacing:0.04em;
+    padding:6px; text-align:center;
+  }
+
+  .about-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:clamp(20px, 4vw, 56px);
+    align-items:start;
+  }
+  h2.big{
+    font-family:var(--display); font-weight:700;
+    font-size:clamp(1.6rem, 3.4vw, 2.5rem);
+    line-height:1.08; letter-spacing:-0.025em;
+    margin:0 0 8px;
+  }
+  .muted{
+    font-family:var(--mono); font-size:0.8rem;
+    color:var(--ink-dim); line-height:1.6; margin:0;
+  }
+  .bio{
+    font-family:var(--mono); font-size:0.84rem;
+    line-height:1.8; color:#c9c9c9; margin:0;
+  }
+  .bio strong{ color:var(--ink); font-weight:700; }
+
+  h2.section-title{
+    font-family:var(--display); font-weight:600;
+    font-size:1.5rem; letter-spacing:-0.02em; margin:0 0 20px;
+  }
+
+  .project-row{
+    display:flex; justify-content:space-between; align-items:flex-start;
+    gap:20px; padding:20px 0;
+    border-top:1px solid var(--border);
+  }
+  #project-list .project-row:last-child{ border-bottom:1px solid var(--border); }
+  .project-row h3{
+    font-family:var(--display); font-weight:600;
+    font-size:1.05rem; margin:0 0 6px;
+  }
+  .project-row p{
+    font-family:var(--mono); font-size:0.78rem;
+    color:var(--ink-dim); margin:0 0 10px; max-width:460px; line-height:1.65;
+  }
+  .tags{ display:flex; gap:7px; flex-wrap:wrap; }
+  .tags span{
+    font-family:var(--mono); font-size:0.62rem;
+    letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--ink-dim);
+    border:1px solid var(--border);
+    border-radius:999px; padding:3px 10px;
+  }
+  .view{
+    font-family:var(--mono); font-weight:500; font-size:0.68rem;
+    letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--accent); text-decoration:none; white-space:nowrap;
+    padding-top:4px;
+  }
+  .view:hover{ text-decoration:underline; }
+
+  .contact-line{ margin-bottom:20px; }
+  .hero-links{ display:flex; gap:10px; flex-wrap:wrap; }
+  .pill-link{
+    font-family:var(--mono); font-weight:500; font-size:0.7rem;
+    letter-spacing:0.1em; text-transform:uppercase; color:var(--ink);
+    border:1px solid var(--border); padding:10px 18px;
+    border-radius:8px; text-decoration:none;
+    transition:border-color 0.15s ease;
+  }
+  .pill-link:hover{ border-color:var(--ink); }
+
+  footer{ padding:22px 4px 0; }
+  footer p{
+    font-family:var(--mono); font-size:0.66rem;
+    letter-spacing:0.06em; color:#4a4a4a; margin:0;
+  }
+
+  @media (max-width:760px){
+    .about-grid{ grid-template-columns:1fr; }
+    .photo-row{ grid-template-columns:1fr; }
+    .photo{ aspect-ratio:16/9; }
+    .nav-links{ gap:14px; }
+    .project-row{ flex-direction:column; gap:10px; }
+  }
+
+</style>
+</head>
+<body class="locked">
+
+<canvas id="bg-canvas"></canvas>
+
+<div id="orientation-gizmo" aria-label="Cube orientation controls">
+  <span class="gizmo-label">view cube</span>
+  <div class="gizmo-scene">
+    <div id="gizmo-cube">
+      <button class="gizmo-face gizmo-front" data-view="front" aria-label="Snap to front view">FRONT</button>
+      <button class="gizmo-face gizmo-back" data-view="back" aria-label="Snap to back view">BACK</button>
+      <button class="gizmo-face gizmo-right" data-view="right" aria-label="Snap to right view">RIGHT</button>
+      <button class="gizmo-face gizmo-left" data-view="left" aria-label="Snap to left view">LEFT</button>
+      <button class="gizmo-face gizmo-top" data-view="top" aria-label="Snap to top view">TOP</button>
+      <button class="gizmo-face gizmo-bottom" data-view="bottom" aria-label="Snap to bottom view">BOTTOM</button>
+    </div>
+  </div>
+  <button id="snap-view-btn" type="button">snap nearest</button>
+</div>
+
+<!-- ======================= LOCK SCREEN ======================= -->
+<div id="lock-screen">
+  <div id="left-col">
+    <!-- EDIT ME -->
+    <h1>Hi, I'm Kenny</h1>
+    <p class="sub">to access more, please solve</p>
+    <p id="status-msg"></p>
+
+        <div id="btn-col">
+      <button id="giveup-btn" class="action-btn">I give up &mdash; solve it for me</button>
+      <button id="help-btn" class="action-btn">Instructions</button>
+      <button id="scramble-btn" class="action-btn hidden">Scramble again</button>
+      <button id="continue-btn" class="action-btn hidden">Continue &rarr;</button>
+    </div>
+  </div>
+</div>
+
+<div id="instructions">
+  <button class="close" id="help-close" aria-label="Close">&times;</button>
+  <h3>How to play</h3>
+  <ul>
+    <li><strong>Drag a face</strong> — click and drag on the cube to turn that layer.</li>
+    <li><strong>Drag empty space</strong> — freely rotate the whole cube in any direction.</li>
+    <li><strong>Alt / Option + drag</strong> or <strong>right-drag</strong> the cube — reorient it without turning a layer.</li>
+    <li><strong>View cube</strong> — click a labeled face to snap to that exact angle.</li>
+    <li><strong>Keyboard</strong> — U D L R F B turn a face; Shift reverses it.</li>
+    <li>The cube starts scrambled. Solve it and the way in opens.</li>
+    <li>Stuck? Give up and it unwinds itself.</li>
+  </ul>
+</div>
+
+<!-- ======================= PORTFOLIO ======================= -->
+<!-- EDIT ME: everything in here is yours to replace -->
+<div id="portfolio">
+
+  <nav id="nav">
+    <span class="nav-name">Kenny</span>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#projects">Projects</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </nav>
+
+  <!-- ---------- About ---------- -->
+  <section class="card" id="about">
+    <div class="photo-row">
+      <!-- EDIT ME: drop your images in an /images folder next to index.html.
+           If a file is missing the placeholder label shows instead. -->
+      <figure class="photo">
+        <img src="images/photo1.jpg" alt="" onerror="this.remove()">
+        <figcaption>images/photo1.jpg</figcaption>
+      </figure>
+      <figure class="photo">
+        <img src="images/photo2.jpg" alt="" onerror="this.remove()">
+        <figcaption>images/photo2.jpg</figcaption>
+      </figure>
+      <figure class="photo">
+        <img src="images/photo3.jpg" alt="" onerror="this.remove()">
+        <figcaption>images/photo3.jpg</figcaption>
+      </figure>
+    </div>
+
+    <div class="about-grid">
+      <div>
+        <h2 class="big">Welcome to my site.</h2>
+        <p class="muted">You solved your way in — or didn't. Either way, hi.</p>
+      </div>
+      <p class="bio">
+        Hey! I'm Kenny, a <strong>CS student</strong> who likes building things
+        that render, move, and occasionally get in your way — like the cube you
+        just dealt with. Right now I'm working on <strong>[what you're doing]</strong>
+        and looking for <strong>[internship / role]</strong>. Replace this with two
+        or three real sentences about yourself.
+      </p>
+    </div>
+  </section>
+
+  <!-- ---------- Projects ---------- -->
+  <section class="card" id="projects">
+    <h2 class="section-title">Projects</h2>
+    <div id="project-list">
+
+      <article class="project-row">
+        <div class="project-main">
+          <h3>Project One</h3>
+          <p>One line on what it does and what you built it with.</p>
+          <div class="tags"><span>React</span><span>Node</span></div>
+        </div>
+        <a class="view" href="#" target="_blank" rel="noopener">View &rarr;</a>
+      </article>
+
+      <article class="project-row">
+        <div class="project-main">
+          <h3>Project Two</h3>
+          <p>One line on what it does and what you built it with.</p>
+          <div class="tags"><span>Python</span></div>
+        </div>
+        <a class="view" href="#" target="_blank" rel="noopener">View &rarr;</a>
+      </article>
+
+      <article class="project-row">
+        <div class="project-main">
+          <h3>This website</h3>
+          <p>A WebGL Rubik's cube you have to solve to get in. Or give up on.</p>
+          <div class="tags"><span>three.js</span><span>WebGL</span></div>
+        </div>
+        <a class="view" href="#" target="_blank" rel="noopener">View &rarr;</a>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ---------- Contact ---------- -->
+  <section class="card" id="contact">
+    <h2 class="section-title">Contact</h2>
+    <p class="muted contact-line">Best way to reach me is email. I read everything.</p>
+    <div class="hero-links">
+      <a class="pill-link" href="mailto:you@example.com">Email</a>
+      <a class="pill-link" href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
+      <a class="pill-link" href="https://linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>
+      <a class="pill-link" href="#" target="_blank" rel="noopener">Resume</a>
+    </div>
+  </section>
+
+  <footer><p>&copy; 2026 Kenny</p></footer>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+
+  var canvas = document.getElementById('bg-canvas');
+  var renderer, scene, camera, starPoints, cubeGroup, turnGroup;
+
+  if (typeof THREE === 'undefined'){ bailOut(); return; }
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+  } catch(e){ bailOut(); return; }
+
+  function bailOut(){
+    if (window.parent !== window){
+      window.parent.postMessage({ type:'kenny-cube-unlocked' }, window.location.origin);
+      return;
+    }
+    document.body.classList.remove('locked');
+    var ls = document.getElementById('lock-screen');
+    if (ls) ls.style.display = 'none';
+  }
+
+  // ===========================================================================
+  // CONSTANTS (must be assigned before init() runs — call is at the bottom)
+  // ===========================================================================
+
+  var SPACING = 1.04, CUBIE = 0.94, STICKER = 0.80;
+  var OFFSET = CUBIE / 2 + 0.012;
+
+  var COLORS = { U:0xf2f2f2, D:0xffd400, F:0x18b45a, B:0x1e50c8, R:0xd42f2f, L:0xff8c00 };
+  var N = {
+    U:new THREE.Vector3(0,1,0),  D:new THREE.Vector3(0,-1,0),
+    F:new THREE.Vector3(0,0,1),  B:new THREE.Vector3(0,0,-1),
+    R:new THREE.Vector3(1,0,0),  L:new THREE.Vector3(-1,0,0)
+  };
+  var AXIS = { x:new THREE.Vector3(1,0,0), y:new THREE.Vector3(0,1,0), z:new THREE.Vector3(0,0,1) };
+
+  var MOVES = {
+    "U": {axis:'y',layer: 1,angle:-Math.PI/2}, "U'":{axis:'y',layer: 1,angle: Math.PI/2},
+    "D": {axis:'y',layer:-1,angle: Math.PI/2}, "D'":{axis:'y',layer:-1,angle:-Math.PI/2},
+    "R": {axis:'x',layer: 1,angle:-Math.PI/2}, "R'":{axis:'x',layer: 1,angle: Math.PI/2},
+    "L": {axis:'x',layer:-1,angle: Math.PI/2}, "L'":{axis:'x',layer:-1,angle:-Math.PI/2},
+    "F": {axis:'z',layer: 1,angle:-Math.PI/2}, "F'":{axis:'z',layer: 1,angle: Math.PI/2},
+    "B": {axis:'z',layer:-1,angle: Math.PI/2}, "B'":{axis:'z',layer:-1,angle:-Math.PI/2}
+  };
+
+  var cubies = [];
+  var stickerMeshes = [];
+  var history = [];
+  var queue = [], active = null, movesMade = 0, solved = false, locked = false;
+  var autoSolving = false, pendingReveal = false;
+  var raycaster = new THREE.Raycaster();
+  var ndc = new THREE.Vector2();
+  var orientationSnap = null, snapCandidates = [];
+  var gizmoEuler = new THREE.Euler(0, 0, 0, 'XYZ');
+
+  // ===========================================================================
+  // INIT
+  // ===========================================================================
+
+  function init(){
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x000000, 1);
+
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 0, 6.4);
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.78));
+    var key = new THREE.DirectionalLight(0xffffff, 0.7);
+    key.position.set(4, 6, 6);
+    scene.add(key);
+
+    buildStarfield();
+
+    cubeGroup = new THREE.Group();
+    // Speedsolving convention: begin with the white center facing down.
+    cubeGroup.rotation.set(-2.72, -0.62, 0);
+    buildSnapCandidates();
+    scene.add(cubeGroup);
+    turnGroup = new THREE.Group();
+    cubeGroup.add(turnGroup);
+    buildCube();
+    scrambleInstant(20);   // arrive already scrambled — no button needed
+
+    layoutCube();
+    window.addEventListener('resize', function(){ onResize(); layoutCube(); });
+
+    setupPointer();
+    setupControls();
+    requestAnimationFrame(tick);
+  }
+
+  function onResize(){
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  }
+
+  function layoutCube(){
+    var visH = 2 * camera.position.z * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+    var visW = visH * camera.aspect;
+    if (window.innerWidth > 860){
+      cubeGroup.position.set(visW * 0.21, 0, 0);
+      cubeGroup.scale.setScalar(1);
+    } else {
+      cubeGroup.position.set(0, -visH * 0.14, 0);
+      cubeGroup.scale.setScalar(0.82);
+    }
+  }
+
+  // ===========================================================================
+  // ORIENTATION SNAPPING
+  // ===========================================================================
+
+  function buildSnapCandidates(){
+    var home = cubeGroup.quaternion.clone();
+    var quarterTurns = [0, Math.PI / 2, Math.PI, Math.PI * 1.5];
+    var cubeRotations = [];
+
+    quarterTurns.forEach(function(x){
+      quarterTurns.forEach(function(y){
+        quarterTurns.forEach(function(z){
+          var q = new THREE.Quaternion().setFromEuler(new THREE.Euler(x, y, z, 'XYZ'));
+          var duplicate = cubeRotations.some(function(other){
+            return Math.abs(other.dot(q)) > 0.9999;
+          });
+          if (!duplicate) cubeRotations.push(q);
+        });
+      });
+    });
+
+    snapCandidates = cubeRotations.map(function(q){
+      return home.clone().multiply(q).normalize();
+    });
+  }
+
+  function beginOrientationSnap(target){
+    var to = target.clone().normalize();
+    var from = cubeGroup.quaternion.clone().normalize();
+    if (from.dot(to) < 0) to.set(-to.x, -to.y, -to.z, -to.w);
+    orientationSnap = {
+      from:from,
+      to:to,
+      started:performance.now(),
+      duration:260
+    };
+  }
+
+  function snapToNearest(){
+    if (!snapCandidates.length) return;
+    var current = cubeGroup.quaternion;
+    var nearest = snapCandidates[0];
+    var best = -1;
+    snapCandidates.forEach(function(candidate){
+      var score = Math.abs(current.dot(candidate));
+      if (score > best){ best = score; nearest = candidate; }
+    });
+    beginOrientationSnap(nearest);
+  }
+
+  function snapToView(view){
+    var views = {
+      front:[0, 0, 0],
+      back:[0, Math.PI, 0],
+      right:[0, -Math.PI / 2, 0],
+      left:[0, Math.PI / 2, 0],
+      top:[Math.PI / 2, 0, 0],
+      bottom:[-Math.PI / 2, 0, 0]
+    };
+    if (!views[view]) return;
+    var angle = views[view];
+    beginOrientationSnap(new THREE.Quaternion().setFromEuler(
+      new THREE.Euler(angle[0], angle[1], angle[2], 'XYZ')
+    ));
+  }
+
+  function stepOrientationSnap(now){
+    if (!orientationSnap) return;
+    var t = Math.min(1, (now - orientationSnap.started) / orientationSnap.duration);
+    var eased = 1 - Math.pow(1 - t, 3);
+    cubeGroup.quaternion.copy(orientationSnap.from).slerp(orientationSnap.to, eased);
+    if (t >= 1){
+      cubeGroup.quaternion.copy(orientationSnap.to);
+      orientationSnap = null;
+    }
+  }
+
+  function updateGizmo(){
+    var gizmo = document.getElementById('gizmo-cube');
+    if (!gizmo || !cubeGroup) return;
+    var q = cubeGroup.quaternion;
+    var cssQuaternion = new THREE.Quaternion(-q.x, q.y, -q.z, q.w);
+    gizmoEuler.setFromQuaternion(cssQuaternion, 'XYZ');
+    gizmo.style.transform =
+      'rotateX(' + gizmoEuler.x + 'rad) ' +
+      'rotateY(' + gizmoEuler.y + 'rad) ' +
+      'rotateZ(' + gizmoEuler.z + 'rad)';
+  }
+
+  function buildStarfield(){
+    var COUNT = 1100, RADIUS = 260;
+    var positions = new Float32Array(COUNT * 3);
+    for (var i = 0; i < COUNT; i++){
+      var u = Math.random(), v = Math.random();
+      var theta = 2 * Math.PI * u;
+      var phi = Math.acos(2 * v - 1);
+      var r = RADIUS * (0.5 + 0.5 * Math.random());
+      positions[i*3]   = r * Math.sin(phi) * Math.cos(theta);
+      positions[i*3+1] = r * Math.sin(phi) * Math.sin(theta);
+      positions[i*3+2] = r * Math.cos(phi);
+    }
+    var geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    starPoints = new THREE.Points(geo, new THREE.PointsMaterial({
+      color:0xffffff, size:1.1, sizeAttenuation:true,
+      transparent:true, opacity:0.7, depthWrite:false
+    }));
+    scene.add(starPoints);
+  }
+
+  function buildCube(){
+    var body = new THREE.MeshStandardMaterial({ color:0x0a0a0a, roughness:0.75 });
+    for (var x=-1; x<=1; x++) for (var y=-1; y<=1; y++) for (var z=-1; z<=1; z++){
+      var g = new THREE.Group();
+      g.position.set(x*SPACING, y*SPACING, z*SPACING);
+      g.add(new THREE.Mesh(new THREE.BoxGeometry(CUBIE,CUBIE,CUBIE), body));
+
+      var cubie = { group:g, pos:new THREE.Vector3(x,y,z), stickers:[] };
+
+      if (x ===  1) addSticker(cubie, N.R, COLORS.R);
+      if (x === -1) addSticker(cubie, N.L, COLORS.L);
+      if (y ===  1) addSticker(cubie, N.U, COLORS.U);
+      if (y === -1) addSticker(cubie, N.D, COLORS.D);
+      if (z ===  1) addSticker(cubie, N.F, COLORS.F);
+      if (z === -1) addSticker(cubie, N.B, COLORS.B);
+
+      cubeGroup.add(g);
+      cubies.push(cubie);
+    }
+  }
+
+  function addSticker(cubie, normal, colorHex){
+    var m = new THREE.Mesh(
+      new THREE.PlaneGeometry(STICKER, STICKER),
+      new THREE.MeshStandardMaterial({ color:colorHex, roughness:0.5 })
+    );
+    m.quaternion.copy(new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0,0,1), normal));
+    m.position.copy(normal.clone().multiplyScalar(OFFSET));
+    cubie.group.add(m);
+
+    var rec = { normal:normal.clone(), color:colorHex, mesh:m };
+    m.userData.cubie = cubie;
+    m.userData.sticker = rec;
+    cubie.stickers.push(rec);
+    stickerMeshes.push(m);
+  }
+
+  // ===========================================================================
+  // MOVE ENGINE
+  // ===========================================================================
+
+  // Apply a turn with no animation. Used to pre-scramble before the first
+  // frame, so the cube is never briefly visible in its solved state.
+  function applyInstant(def){
+    var axisVec = AXIS[def.axis];
+    var q = new THREE.Quaternion().setFromAxisAngle(axisVec, def.angle);
+    cubies.forEach(function(c){
+      if (Math.round(c.pos[def.axis]) !== def.layer) return;
+      c.pos.applyAxisAngle(axisVec, def.angle);
+      c.pos.set(Math.round(c.pos.x), Math.round(c.pos.y), Math.round(c.pos.z));
+      c.group.position.copy(c.pos).multiplyScalar(SPACING);
+      c.group.quaternion.premultiply(q);
+    });
+    history.push(def);
+    movesMade++;
+  }
+
+  function randomSequence(n){
+    var names = Object.keys(MOVES), seq = [], last = null;
+    for (var i = 0; i < n; i++){
+      var m;
+      do { m = names[Math.floor(Math.random()*names.length)]; } while (last && m[0] === last[0]);
+      last = m;
+      seq.push(m);
+    }
+    return seq;
+  }
+
+  function scrambleInstant(n){
+    randomSequence(n).forEach(function(name){ applyInstant(MOVES[name]); });
+  }
+
+  function queueMove(move, opts){
+    if (locked) return;
+    var def = (typeof move === 'string') ? MOVES[move] : move;
+    if (!def) return;
+    queue.push({ def:def, record: !(opts && opts.record === false) });
+    next();
+  }
+
+  function next(){
+    if (active || !queue.length) return;
+    var item = queue.shift();
+    var def = item.def;
+    var layer = cubies.filter(function(c){ return Math.round(c.pos[def.axis]) === def.layer; });
+    layer.forEach(function(c){ turnGroup.attach(c.group); });
+    active = {
+      def: def,
+      record: item.record,
+      axisVec: AXIS[def.axis],
+      layer: layer,
+      start: performance.now(),
+      dur: queue.length > 4 ? 110 : 190
+    };
+    setEnabled(false);
+  }
+
+  function step(now){
+    if (!active) return;
+    var t = Math.min(1, (now - active.start) / active.dur);
+    var e = 1 - Math.pow(1 - t, 3);
+    turnGroup.quaternion.setFromAxisAngle(active.axisVec, active.def.angle * e);
+    if (t >= 1) done();
+  }
+
+  function done(){
+    var def = active.def, ax = active.axisVec;
+    active.layer.forEach(function(c){
+      cubeGroup.attach(c.group);
+      c.pos.applyAxisAngle(ax, def.angle);
+      c.pos.set(Math.round(c.pos.x), Math.round(c.pos.y), Math.round(c.pos.z));
+    });
+    turnGroup.quaternion.identity();
+    if (active.record) history.push(def);
+    active = null;
+    movesMade++;
+
+    if (queue.length){ next(); return; }
+
+    autoSolving = false;
+    setEnabled(true);
+
+    if (pendingReveal){
+      pendingReveal = false;
+      status('cube reset — go on in');
+      showSolvedButtons();
+      return;
+    }
+    checkSolved();
+  }
+
+  function checkSolved(){
+    if (movesMade === 0) return;
+    var faces = {}, ok = true;
+    cubies.forEach(function(c){
+      c.stickers.forEach(function(s){
+        var d = s.normal.clone().applyQuaternion(c.group.quaternion);
+        d.set(Math.round(d.x), Math.round(d.y), Math.round(d.z));
+        var k = d.x+','+d.y+','+d.z;
+        (faces[k] = faces[k] || []).push(s.color);
+      });
+    });
+    var keys = Object.keys(faces);
+    if (keys.length !== 6) ok = false;
+    keys.forEach(function(k){
+      var a = faces[k];
+      if (a.length !== 9){ ok = false; return; }
+      for (var i=1;i<a.length;i++) if (a[i] !== a[0]){ ok = false; break; }
+    });
+    if (ok && !solved){
+      solved = true;
+      status('solved it yourself — respect');
+      showSolvedButtons();
+    }
+  }
+
+  // ===========================================================================
+  // POINTER
+  // ===========================================================================
+
+  function setupPointer(){
+    var mode = null, startX = 0, startY = 0, lastX = 0, lastY = 0;
+    var grab = null, resolved = false, dragging = false;
+
+    function ndcFrom(e){
+      ndc.x = (e.clientX / window.innerWidth) * 2 - 1;
+      ndc.y = -(e.clientY / window.innerHeight) * 2 + 1;
+    }
+
+    function screenDirOf(pointWorld, dirWorld){
+      var a = pointWorld.clone().project(camera);
+      var b = pointWorld.clone().add(dirWorld.clone().multiplyScalar(0.4)).project(camera);
+      return {
+        x: (b.x - a.x) * window.innerWidth * 0.5,
+        y: -(b.y - a.y) * window.innerHeight * 0.5
+      };
+    }
+
+    function onDown(e){
+      if (locked || active || autoSolving) return;
+      orientationSnap = null;
+      dragging = true;
+      startX = lastX = e.clientX;
+      startY = lastY = e.clientY;
+      resolved = false; grab = null; mode = 'orbit';
+      canvas.style.cursor = 'grabbing';
+
+      ndcFrom(e);
+      raycaster.setFromCamera(ndc, camera);
+      var hits = raycaster.intersectObjects(stickerMeshes, false);
+      var forceOrbit = e.altKey || e.shiftKey || e.button === 2;
+      if (hits.length && !forceOrbit){
+        var mesh = hits[0].object;
+        var cubie = mesh.userData.cubie;
+        var sticker = mesh.userData.sticker;
+        var ln = sticker.normal.clone().applyQuaternion(cubie.group.quaternion);
+        ln.set(Math.round(ln.x), Math.round(ln.y), Math.round(ln.z));
+        grab = { cubie:cubie, localNormal:ln, pointWorld:hits[0].point.clone() };
+        mode = 'layer';
+      }
+    }
+
+    function onMove(e){
+      if (!dragging) return;
+      var dx = e.clientX - lastX, dy = e.clientY - lastY;
+      lastX = e.clientX; lastY = e.clientY;
+
+      if (mode === 'orbit'){
+        cubeGroup.rotation.y += dx * 0.006;
+        cubeGroup.rotation.x += dy * 0.006;
+        return;
+      }
+
+      if (mode === 'layer' && !resolved){
+        var tx = e.clientX - startX, ty = e.clientY - startY;
+        if (Math.hypot(tx, ty) < 10) return;
+        resolved = true;
+        applyDragTwist(grab, tx, ty);
+      }
+    }
+
+    function onUp(){
+      var shouldSnap = dragging && mode === 'orbit';
+      dragging = false;
+      mode = null;
+      canvas.style.cursor = 'grab';
+      if (shouldSnap) snapToNearest();
+    }
+
+    function applyDragTwist(g, dragX, dragY){
+      var n = g.localNormal;
+
+      var cands = [];
+      ['x','y','z'].forEach(function(k){
+        if (Math.abs(n[k]) < 0.5) cands.push(AXIS[k].clone());
+      });
+      if (cands.length !== 2) return;
+
+      var len = Math.hypot(dragX, dragY) || 1;
+      var dragUnit = { x: dragX / len, y: dragY / len };
+
+      var best = null, bestAbs = -1;
+      cands.forEach(function(u){
+        var world = u.clone().applyQuaternion(cubeGroup.quaternion);
+        var sd = screenDirOf(g.pointWorld, world);
+        var sdLen = Math.hypot(sd.x, sd.y) || 1;
+        var dot = (sd.x / sdLen) * dragUnit.x + (sd.y / sdLen) * dragUnit.y;
+        if (Math.abs(dot) > bestAbs){ bestAbs = Math.abs(dot); best = { u:u, sign: dot < 0 ? -1 : 1 }; }
+      });
+      if (!best) return;
+
+      var u = best.u.clone().multiplyScalar(best.sign);
+      var a = n.clone().cross(u);
+      a.set(Math.round(a.x), Math.round(a.y), Math.round(a.z));
+
+      var axisName = Math.abs(a.x) > 0.5 ? 'x' : (Math.abs(a.y) > 0.5 ? 'y' : 'z');
+      var s = a[axisName] < 0 ? -1 : 1;
+
+      queueMove({
+        axis: axisName,
+        layer: Math.round(g.cubie.pos[axisName]),
+        angle: s * (Math.PI / 2)
+      });
+    }
+
+    canvas.addEventListener('pointerdown', onDown);
+    canvas.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+    canvas.style.cursor = 'grab';
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+    window.addEventListener('pointercancel', onUp);
+  }
+
+  // ===========================================================================
+  // BUTTONS
+  // ===========================================================================
+
+  function status(text){
+    var el = document.getElementById('status-msg');
+    el.textContent = text;
+    if (text) el.classList.add('show'); else el.classList.remove('show');
+  }
+
+  // Solved: swap "I give up" out for "Scramble again" + "Continue".
+  function showSolvedButtons(){
+    document.getElementById('giveup-btn').classList.add('hidden');
+    document.getElementById('scramble-btn').classList.remove('hidden');
+    document.getElementById('continue-btn').classList.remove('hidden');
+  }
+
+  // Back to a scrambled cube: only "I give up" again.
+  function showPuzzleButtons(){
+    document.getElementById('giveup-btn').classList.remove('hidden');
+    document.getElementById('scramble-btn').classList.add('hidden');
+    document.getElementById('continue-btn').classList.add('hidden');
+  }
+
+  function setEnabled(on){
+    document.getElementById('scramble-btn').disabled = !on;
+    document.getElementById('giveup-btn').disabled = !on;
+    document.getElementById('continue-btn').disabled = !on;
+  }
+
+  function setupControls(){
+    // "Scramble again" — re-locks the door and hides Continue until it's solved.
+    document.getElementById('scramble-btn').addEventListener('click', function(){
+      solved = false;
+      history.length = 0;
+      showPuzzleButtons();
+      status('');
+      randomSequence(20).forEach(function(m){ queueMove(m); });
+    });
+
+    // One button: unwinds every move, then offers Continue. No solver needed.
+    document.getElementById('giveup-btn').addEventListener('click', function(){
+      if (!history.length){
+        status('nothing to undo — go on in');
+        showSolvedButtons();
+        return;
+      }
+      autoSolving = true;
+      pendingReveal = true;
+      solved = true;              // don't double-fire the self-solve message
+      status('unwinding...');
+      for (var i = history.length - 1; i >= 0; i--){
+        var d = history[i];
+        queueMove({ axis:d.axis, layer:d.layer, angle:-d.angle }, { record:false });
+      }
+      history.length = 0;
+    });
+
+    document.getElementById('continue-btn').addEventListener('click', unlock);
+
+    var help = document.getElementById('instructions');
+    document.getElementById('help-btn').addEventListener('click', function(){
+      help.classList.toggle('open');
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('.gizmo-face'), function(face){
+      face.addEventListener('click', function(){
+        var view = face.getAttribute('data-view');
+        snapToView(view);
+        status(view + ' view');
+      });
+    });
+    document.getElementById('snap-view-btn').addEventListener('click', function(){
+      snapToNearest();
+      status('orientation snapped');
+    });
+    document.getElementById('help-close').addEventListener('click', function(){
+      help.classList.remove('open');
+    });
+
+    window.addEventListener('keydown', function(e){
+      if (locked) return;
+      if (e.key === 'Escape'){ help.classList.remove('open'); return; }
+      var map = { u:'U', d:'D', l:'L', r:'R', f:'F', b:'B' };
+      var k = e.key.toLowerCase();
+      if (map[k]) queueMove(map[k] + (e.shiftKey ? "'" : ""));
+    });
+  }
+
+  function unlock(){
+    locked = true;
+    document.getElementById('instructions').classList.remove('open');
+    document.getElementById('lock-screen').classList.add('unlocking');
+    setTimeout(function(){
+      if (window.parent !== window){
+        window.parent.postMessage({ type:'kenny-cube-unlocked' }, window.location.origin);
+        return;
+      }
+      document.body.classList.remove('locked');
+      document.getElementById('lock-screen').style.display = 'none';
+      window.scrollTo(0, 0);
+    }, 600);
+  }
+
+  function tick(now){
+    requestAnimationFrame(tick);
+    if (!scene) return;
+    starPoints.rotation.y += 0.00004;
+    if (active) step(now);
+    stepOrientationSnap(now);
+    updateGizmo();
+    renderer.render(scene, camera);
+  }
+
+  init();
+
+})();
+</script>
+</body>
+</html>

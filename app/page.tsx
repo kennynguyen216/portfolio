@@ -1,204 +1,204 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
+import { CubeGate } from "./CubeGate";
 
 const projects = [
   {
     number: "01",
-    title: "Northstar",
-    type: "SaaS analytics platform",
+    name: "SigmaNova",
+    type: "Jun 2026 — Aug 2026",
     description:
-      "A focused workspace that turns complex product data into clear, actionable decisions for growing teams.",
-    tags: ["Product design", "React", "Data visualization"],
-    tone: "blue",
+      "A real-time volumetric supernova renderer with procedural stellar structure, collapse and flash effects, asymmetric ejecta, a cooling nebular remnant, and a compact pulsar. I accelerated its raymarching 3.5× and reduced final-remnant GPU time by 43.3%.",
+    tools: ["C++", "OpenGL", "GLSL", "CMake"],
+    href: "https://github.com/kennynguyen216/SigmaNova",
   },
   {
     number: "02",
-    title: "Cedar",
-    type: "Climate marketplace",
+    name: "Mirabilis",
+    type: "Aug 2026 — Present",
     description:
-      "A transparent marketplace connecting thoughtful buyers with verified, low-impact materials and makers.",
-    tags: ["Brand system", "Next.js", "E-commerce"],
-    tone: "green",
+      "A Vulkan renderer built from scratch with textured glTF scenes, programmable shaders, and linked portals. It pairs momentum-preserving portal traversal with fixed-step Source-style movement, bunny hopping, and live speed telemetry.",
+    tools: ["C++", "Vulkan", "SDL2", "ImGui", "CMake"],
+    href: "https://github.com/kennynguyen216/Mirabilis",
   },
   {
     number: "03",
-    title: "Archive",
-    type: "Independent publishing",
+    name: "3 Minutes to Rage",
+    type: "Spring 2026 · Team project",
     description:
-      "An editorial reading experience made for long-form stories, curious minds, and small screens.",
-    tags: ["Art direction", "Typography", "Frontend"],
-    tone: "coral",
+      "A fast first-person game whose combat reacts to microphone amplitude and speech recognition. I connected voice input to game state, shaders, scoring, and dynamic visual feedback under hackathon time constraints.",
+    tools: ["Unity3D", "C#", "Voice input", "Shaders"],
+    href: "https://github.com/liangricky7/tspmo3-3MinutesToRage",
   },
 ];
 
-const capabilities = [
-  "Creative direction",
-  "Product design",
-  "Design systems",
-  "Frontend development",
-  "Prototyping",
-  "Accessible interfaces",
-];
-
-export async function generateMetadata(): Promise<Metadata> {
-  const requestHeaders = await headers();
-  const host =
-    requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host");
-  const protocol =
-    requestHeaders.get("x-forwarded-proto") ??
-    (host?.startsWith("localhost") ? "http" : "https");
-  const origin = host ? `${protocol}://${host}` : "https://example.com";
-  const title = "Your Name — Designer & Developer";
-  const description =
-    "Independent designer and developer creating clear, memorable digital experiences.";
-
-  return {
-    title,
-    description,
-    openGraph: {
-      title,
-      description,
-      type: "website",
-      images: [{ url: `${origin}/og.png`, alt: title }],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-      images: [`${origin}/og.png`],
-    },
-  };
-}
+export const metadata: Metadata = {
+  title: "Kennedy Nguyen — Software engineer",
+  description: "Graphics, AI systems, and interactive software by Kennedy Nguyen.",
+  openGraph: {
+    title: "Kennedy Nguyen — Software engineer",
+    description: "Graphics, AI systems, and interactive software.",
+    images: [],
+  },
+  twitter: {
+    title: "Kennedy Nguyen — Software engineer",
+    description: "Graphics, AI systems, and interactive software.",
+    images: [],
+  },
+};
 
 export default function Home() {
   return (
-    <main>
-      <header className="site-header">
-        <a className="wordmark" href="#top" aria-label="Your Name, back to top">
-          YN<span>.</span>
-        </a>
-        <nav aria-label="Primary navigation">
-          <a href="#work">Work</a>
-          <a href="#about">About</a>
-          <a className="nav-contact" href="#contact">
-            Let&apos;s talk <span aria-hidden="true">↗</span>
+    <>
+      <CubeGate />
+
+      <main id="home">
+        <header className="site-header">
+          <a className="brand" href="#home" aria-label="Back to the top">
+            Kennedy Nguyen
           </a>
-        </nav>
-      </header>
+          <nav aria-label="Primary navigation">
+            <a href="#work">Work</a>
+            <a href="#experience">Experience</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+          </nav>
+        </header>
 
-      <section className="hero" id="top">
-        <div className="eyebrow">
-          <span className="status-dot" aria-hidden="true" />
-          Available for select projects · 2026
-        </div>
-        <h1>
-          I make digital
-          <br />
-          work <em>feel human.</em>
-        </h1>
-        <div className="hero-bottom">
-          <p>
-            I&apos;m <strong>Your Name</strong>, a designer and developer turning
-            ambitious ideas into clear, memorable digital experiences.
+        <section className="hero" aria-labelledby="hero-title">
+          <p className="label">Research software engineer · LSU CS &apos;27</p>
+          <h1 id="hero-title">Hi, I&apos;m Kenny.</h1>
+          <p className="hero-copy">
+            I build graphics systems, AI tools, and interactive software.
           </p>
-          <a className="round-link" href="#work" aria-label="See selected work">
-            <span>See work</span>
-            <span className="round-arrow" aria-hidden="true">↓</span>
-          </a>
-        </div>
-        <div className="hero-orbit orbit-one" aria-hidden="true" />
-        <div className="hero-orbit orbit-two" aria-hidden="true" />
-      </section>
+          <p className="quiet-note">Based in Baton Rouge · Open to 2027 roles</p>
+        </section>
 
-      <section className="work-section" id="work">
-        <div className="section-heading">
-          <p className="section-kicker">Selected work</p>
-          <p className="section-count">03 projects · Demo content</p>
-        </div>
-
-        <div className="project-list">
-          {projects.map((project) => (
-            <article className="project" key={project.number}>
-              <div className={`project-visual ${project.tone}`} aria-hidden="true">
-                <span className="project-ghost-number">{project.number}</span>
-                <div className="project-window">
-                  <div className="window-bar"><span /><span /><span /></div>
-                  <div className="window-content">
-                    <div className="window-line short" />
-                    <div className="window-title" />
-                    <div className="window-grid"><div /><div /><div /></div>
-                  </div>
-                </div>
-              </div>
-              <div className="project-copy">
-                <div>
-                  <p className="project-meta">{project.number} / {project.type}</p>
-                  <h2>{project.title}</h2>
-                  <p className="project-description">{project.description}</p>
-                </div>
-                <div className="project-footer">
-                  <ul aria-label={`${project.title} skills`}>
-                    {project.tags.map((tag) => <li key={tag}>{tag}</li>)}
-                  </ul>
-                  <a href="#contact" aria-label={`Ask about ${project.title}`}>
-                    View case study <span aria-hidden="true">↗</span>
-                  </a>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="about-section" id="about">
-        <div className="about-label">
-          <p className="section-kicker light">About me</p>
-          <span>Based in Your City</span>
-        </div>
-        <div className="about-main">
-          <p className="about-statement">
-            Equal parts <em>curious thinker</em>, meticulous designer, and
-            hands-on builder.
-          </p>
-          <div className="about-details">
-            <p>
-              I care about the space where strategy, design, and technology
-              meet. My work is grounded in a simple idea: useful things can
-              also be beautiful, distinctive, and a pleasure to use.
-            </p>
-            <p>
-              When I&apos;m away from the screen, you&apos;ll usually find me exploring
-              new places, collecting references, or making something with my hands.
-            </p>
+        <section className="section" id="work" aria-labelledby="work-title">
+          <div className="section-heading">
+            <p className="label">01 / Work</p>
+            <h2 id="work-title">Selected work</h2>
           </div>
-        </div>
-        <ul className="capability-list" aria-label="Capabilities">
-          {capabilities.map((capability, index) => (
-            <li key={capability}>
-              <span>{String(index + 1).padStart(2, "0")}</span>{capability}
-            </li>
-          ))}
-        </ul>
-      </section>
 
-      <footer id="contact">
-        <div className="footer-top">
-          <p className="section-kicker">Have a project in mind?</p>
-          <p>Open for freelance, collaborations, and interesting conversations.</p>
-        </div>
-        <a className="email-link" href="mailto:hello@example.com">
-          hello@example.com <span aria-hidden="true">↗</span>
-        </a>
-        <div className="footer-bottom">
-          <p>© 2026 Your Name</p>
-          <div className="social-links">
-            <a href="https://github.com/" target="_blank" rel="noreferrer">GitHub</a>
-            <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer">LinkedIn</a>
-            <a href="mailto:hello@example.com">Email</a>
+          <div className="work-list">
+            {projects.map((project) => (
+              <article className="work-item" key={project.name}>
+                <div className="work-number">{project.number}</div>
+                <div className="work-main">
+                  <p className="work-meta">{project.type}</p>
+                  <h3>
+                    <a href={project.href} target="_blank" rel="noreferrer">
+                      {project.name} <span aria-hidden="true">↗</span>
+                    </a>
+                  </h3>
+                  <p>{project.description}</p>
+                </div>
+                <p className="work-tools">
+                  {project.tools.map((tool) => <span key={tool}>{tool}</span>)}
+                </p>
+              </article>
+            ))}
           </div>
-          <a href="#top">Back to top ↑</a>
-        </div>
-      </footer>
-    </main>
+        </section>
+
+        <section className="section" id="experience" aria-labelledby="experience-title">
+          <div className="section-heading">
+            <p className="label">02 / Experience</p>
+            <h2 id="experience-title">Where I work</h2>
+          </div>
+
+          <article className="experience-item">
+            <p className="experience-date">Jun 2026 — Present</p>
+            <div className="experience-main">
+              <p className="experience-org">LSU Center for Analytics and Research in Transportation Safety</p>
+              <h3>Research Software Engineer</h3>
+              <p>
+                I develop a natural-language crash analytics agent that lets
+                transportation researchers query statewide databases without
+                writing SQL. The system uses self-hosted language models,
+                Qdrant retrieval, read-only SQL enforcement, and consistency
+                monitoring for auditable results.
+              </p>
+              <p className="result-line">
+                <span>44%</span> lower intent-extraction latency after instrumenting
+                the .NET workflow and routing reasoning effort by stage.
+              </p>
+            </div>
+          </article>
+        </section>
+
+        <section className="section split-section" id="about" aria-labelledby="about-title">
+          <div className="section-heading">
+            <p className="label">03 / About</p>
+            <h2 id="about-title">A little about me</h2>
+          </div>
+          <div className="about-copy">
+            <p>
+              I&apos;m pursuing a B.S. in Computer Science at LSU with a software
+              engineering concentration, graduating in May 2027. I&apos;m most
+              interested in work where software becomes something you can see,
+              measure, or interact with.
+            </p>
+            <dl>
+              <div>
+                <dt>Coursework GPA</dt>
+                <dd>3.4 / 4.0</dd>
+              </div>
+              <div>
+                <dt>Recognition</dt>
+                <dd>LSU Honor Roll · Spring 2026</dd>
+              </div>
+            </dl>
+
+            <div className="skill-groups" aria-label="Technical skills">
+              <p><span>Languages</span>C++, C#, Python, Java, JavaScript, SQL, GLSL</p>
+              <p><span>Graphics</span>Vulkan, OpenGL, SDL2, ImGui, Unity3D, GPU profiling</p>
+              <p><span>AI &amp; data</span>RAG, Qdrant, Ollama, Gemini Vision, SQL generation</p>
+              <p><span>Frameworks</span>ASP.NET Core, EF Core, Microsoft Agent Framework, OpenCV</p>
+            </div>
+
+            <div className="honors">
+              <h3>Honors</h3>
+              <ul>
+                <li>WICS Spring Hackathon 2026 — 2nd Place, Advanced Bracket</li>
+                <li>WICS Spring Hackathon 2026 — Best Presentation</li>
+                <li>SASE Fall Hackathon 2025 — 3rd Place</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section className="section contact-section" id="contact" aria-labelledby="contact-title">
+          <p className="label">04 / Contact</p>
+          <h2 id="contact-title">Say hello.</h2>
+          <p>Email is the easiest way to reach me. You can also find my work on GitHub.</p>
+          <div className="contact-links">
+            <a className="contact-link" href="mailto:kennedyn216@gmail.com">
+              Email <span aria-hidden="true">↗</span>
+            </a>
+            <a
+              className="contact-link"
+              href="https://github.com/kennynguyen216"
+              target="_blank"
+              rel="noreferrer"
+            >
+              GitHub <span aria-hidden="true">↗</span>
+            </a>
+            <a
+              className="contact-link"
+              href="https://www.linkedin.com/in/kennedynguyen216"
+              target="_blank"
+              rel="noreferrer"
+            >
+              LinkedIn <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </section>
+
+        <footer>
+          <span>© 2026 Kennedy Nguyen</span>
+          <a href="#home">Back to top ↑</a>
+        </footer>
+      </main>
+    </>
   );
 }

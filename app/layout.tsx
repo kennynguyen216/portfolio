@@ -6,8 +6,8 @@ const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Your Name — Designer & Developer",
-  description: "Independent designer and developer creating clear, memorable digital experiences.",
+  title: "Kennedy Nguyen — Software engineer",
+  description: "Graphics, games, AI tools, and interactive software by Kennedy Nguyen.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
