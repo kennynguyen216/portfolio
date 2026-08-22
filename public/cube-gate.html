@@ -821,9 +821,11 @@
   // MOVE ENGINE
   // ===========================================================================
 
-  // Apply a turn with no animation. Used to pre-scramble before the first
-  // frame, so the cube is never briefly visible in its solved state.
-  function applyInstant(def){
+  // Turns the cube with no animation, touching only geometry — no history
+  // bookkeeping. Split out so callers that are themselves iterating/popping
+  // `history` (like the give-up bulk revert) can apply moves without
+  // corrupting the array they're reading from.
+  function applyGeometryInstant(def){
     var axisVec = AXIS[def.axis];
     var q = new THREE.Quaternion().setFromAxisAngle(axisVec, def.angle);
     cubies.forEach(function(c){
@@ -833,6 +835,13 @@
       c.group.position.copy(c.pos).multiplyScalar(SPACING);
       c.group.quaternion.premultiply(q);
     });
+  }
+
+  // Apply a turn with no animation, recorded into history. Used to
+  // pre-scramble before the first frame (so the cube is never briefly
+  // visible solved) and for genuinely new moves made while spam-throttled.
+  function applyInstant(def){
+    applyGeometryInstant(def);
     history.push(def);
     movesMade++;
   }
@@ -852,10 +861,20 @@
     randomSequence(n).forEach(function(name){ applyInstant(MOVES[name]); });
   }
 
+  // Above this many pending turns, stop animating and just apply moves
+  // instantly. Without this, someone mashing a turn key hundreds of times
+  // queues up a backlog that has to play out at ~100ms/turn (minutes), and
+  // "I give up" can't jump the line — it just joins the same queue.
+  var MAX_ANIMATED_QUEUE = 24;
+
   function queueMove(move, opts){
     if (locked) return;
     var def = (typeof move === 'string') ? MOVES[move] : move;
     if (!def) return;
+    if (queue.length >= MAX_ANIMATED_QUEUE){
+      applyInstant(def);
+      return;
+    }
     queue.push({ def:def, record: !(opts && opts.record === false) });
     next();
   }
@@ -1094,6 +1113,9 @@
     });
 
     // One button: unwinds every move, then offers Continue. No solver needed.
+    // If someone's spammed hundreds/thousands of turns, animating every single
+    // one back out would take forever — so only the most recent handful get
+    // the animated unwind, and everything older is snapped back instantly.
     document.getElementById('giveup-btn').addEventListener('click', function(){
       if (!history.length){
         status('nothing to undo — go on in');
@@ -1104,6 +1126,17 @@
       pendingReveal = true;
       solved = true;              // don't double-fire the self-solve message
       status('unwinding...');
+
+      // Use the non-recording geometry helper here, not applyInstant() — this
+      // loop pops from `history` while walking it, so a call that also
+      // pushes onto `history` would eat its own tail instead of reaching
+      // further back through the real sequence.
+      var ANIMATED_TAIL = 25;
+      var bulkCount = Math.max(0, history.length - ANIMATED_TAIL);
+      for (var b = 0; b < bulkCount; b++){
+        var d = history.pop();
+        applyGeometryInstant({ axis:d.axis, layer:d.layer, angle:-d.angle });
+      }
       for (var i = history.length - 1; i >= 0; i--){
         var d = history[i];
         queueMove({ axis:d.axis, layer:d.layer, angle:-d.angle }, { record:false });
@@ -1112,6 +1145,38 @@
     });
 
     document.getElementById('continue-btn').addEventListener('click', unlock);
+
+    window.__cubeDebug = function(){
+      return { queueLen: queue.length, historyLen: history.length, active: !!active, movesMade: movesMade };
+    };
+    window.__cubeStep = function(now){ if (active) step(now); };
+    window.__cubeFastForward = function(maxIter){
+      var n = 0;
+      while (active && n < (maxIter || 100000)){
+        step(active.start + active.dur + 1);
+        n++;
+      }
+      return n;
+    };
+    window.__cubeSolvedCheck = function(){
+      var faces = {}, ok = true;
+      cubies.forEach(function(c){
+        c.stickers.forEach(function(s){
+          var d = s.normal.clone().applyQuaternion(c.group.quaternion);
+          d.set(Math.round(d.x), Math.round(d.y), Math.round(d.z));
+          var k = d.x+','+d.y+','+d.z;
+          (faces[k] = faces[k] || []).push(s.color);
+        });
+      });
+      var keys = Object.keys(faces);
+      if (keys.length !== 6) ok = false;
+      keys.forEach(function(k){
+        var a = faces[k];
+        if (a.length !== 9){ ok = false; return; }
+        for (var i=1;i<a.length;i++) if (a[i] !== a[0]){ ok = false; return; }
+      });
+      return ok;
+    };
 
     var help = document.getElementById('instructions');
     document.getElementById('help-btn').addEventListener('click', function(){
