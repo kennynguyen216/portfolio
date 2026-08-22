@@ -64,13 +64,13 @@ function mod(n: number, m: number) {
 
 function Slide({
   item,
-  role,
+  position,
 }: {
   item: (typeof candids)[number];
-  role: "prev" | "current" | "next";
+  position: "prev" | "current" | "next";
 }) {
   return (
-    <figure className={`hobby-slide hobby-slide-${role}`}>
+    <figure className={`hobby-slide hobby-slide-${position}`}>
       {item.type === "video" ? (
         <video
           key={item.src}
@@ -90,7 +90,7 @@ function Slide({
           style={item.objectPosition ? { objectPosition: item.objectPosition } : undefined}
         />
       )}
-      {role === "current" && <figcaption>{item.caption}</figcaption>}
+      {position === "current" && <figcaption>{item.caption}</figcaption>}
     </figure>
   );
 }
@@ -119,10 +119,10 @@ export function HobbyCarousel() {
           onClick={() => setIndex(prevIndex)}
           aria-label="Previous photo"
         >
-          <Slide item={candids[prevIndex]} role="prev" />
+          <Slide item={candids[prevIndex]} position="prev" />
         </button>
 
-        <Slide item={candids[index]} role="current" />
+        <Slide item={candids[index]} position="current" />
 
         <button
           type="button"
@@ -130,7 +130,7 @@ export function HobbyCarousel() {
           onClick={() => setIndex(nextIndex)}
           aria-label="Next photo"
         >
-          <Slide item={candids[nextIndex]} role="next" />
+          <Slide item={candids[nextIndex]} position="next" />
         </button>
       </div>
 

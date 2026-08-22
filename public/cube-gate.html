@@ -861,10 +861,10 @@
     randomSequence(n).forEach(function(name){ applyInstant(MOVES[name]); });
   }
 
-  // Above this many pending turns, stop animating and just apply moves
-  // instantly. Without this, someone mashing a turn key hundreds of times
-  // queues up a backlog that has to play out at ~100ms/turn (minutes), and
-  // "I give up" can't jump the line — it just joins the same queue.
+  // Cap pending turns so someone mashing a key cannot create a minutes-long
+  // backlog. Extra inputs are ignored until the short queue catches up. Do
+  // not apply them instantly here: an animated layer may currently be attached
+  // to turnGroup, and mutating its geometry mid-turn can corrupt cube state.
   var MAX_ANIMATED_QUEUE = 24;
 
   function queueMove(move, opts){
@@ -872,7 +872,7 @@
     var def = (typeof move === 'string') ? MOVES[move] : move;
     if (!def) return;
     if (queue.length >= MAX_ANIMATED_QUEUE){
-      applyInstant(def);
+      status('finishing queued moves...');
       return;
     }
     queue.push({ def:def, record: !(opts && opts.record === false) });

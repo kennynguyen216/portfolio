@@ -27,6 +27,10 @@ test("server-renders Kenny's complete portfolio draft", async () => {
   assert.match(html, /SigmaNova/);
   assert.match(html, /Mirabilis/);
   assert.match(html, /3 Minutes to Rage/);
+  assert.match(html, /What I(?:&apos;|')m working on/);
+  assert.match(html, /When I(?:&apos;|')m not coding/);
+  assert.match(html, /kenny-headshot\.jpg/);
+  assert.match(html, /mirabilis-milestone2-demo\.mp4/);
   assert.match(html, /Research Software Engineer/);
   assert.match(html, /44%/);
   assert.match(html, /WICS Spring Hackathon 2026/);
@@ -56,6 +60,8 @@ test("the cube gate provides a solvable path and an escape hatch", async () => {
   assert.match(gate, /Alt \/ Option \+ drag/);
   assert.doesNotMatch(gate, /id="orient-btn"/);
   assert.doesNotMatch(gate, /window\.__spin/);
+  assert.match(gate, /finishing queued moves/);
+  assert.doesNotMatch(gate, /queue\.length >= MAX_ANIMATED_QUEUE\)[\s\S]{0,80}applyInstant/);
   assert.doesNotMatch(gate, /Math\.abs\(vx\) < 0\.0003 \? 0\.0012/);
   assert.doesNotMatch(gate, /Math\.max\(-1\.2, Math\.min\(1\.2/);
 });
