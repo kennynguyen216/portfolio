@@ -31,6 +31,9 @@ test("server-renders Kenny's complete portfolio draft", async () => {
   assert.match(html, /When I(?:&apos;|')m not coding/);
   assert.match(html, /kenny-headshot\.jpg/);
   assert.match(html, /mirabilis-milestone2-demo\.mp4/);
+  assert.match(html, /mirabilis-after-shadows\.mp4/);
+  assert.match(html, /mirabilis-before-shadows\.png/);
+  assert.match(html, /mirabilis-movement-time-trial\.mp4/);
   assert.match(html, /Research Software Engineer/);
   assert.match(html, /44%/);
   assert.match(html, /WICS Spring Hackathon 2026/);

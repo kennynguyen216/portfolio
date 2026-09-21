@@ -72,6 +72,42 @@ const currentlyBuilding = {
   tools: ["C++", "Vulkan", "SDL2", "ImGui", "CMake", "Real-Time Simulation"],
 };
 
+const mirabilisCaptures = [
+  {
+    label: "Before the shadow pass",
+    src: "/media/mirabilis-before-shadows.png",
+    kind: "image",
+    alt: "Mirabilis Sponza scene before the real-time shadow pass",
+  },
+  {
+    label: "After the shadow pass",
+    src: "/media/mirabilis-after-shadows.png",
+    kind: "image",
+    alt: "Mirabilis Sponza scene after the real-time shadow pass",
+  },
+  {
+    label: "Before shadows · video",
+    src: "/media/mirabilis-before-shadows.mp4",
+    kind: "video",
+    poster: "/media/mirabilis-before-shadows.png",
+    alt: "Walkthrough of the Mirabilis Sponza scene before shadows",
+  },
+  {
+    label: "Shadow pass · video",
+    src: "/media/mirabilis-after-shadows.mp4",
+    kind: "video",
+    poster: "/media/mirabilis-after-shadows.png",
+    alt: "Walkthrough of the Mirabilis Sponza scene with real-time shadows",
+  },
+  {
+    label: "Timed movement course",
+    src: "/media/mirabilis-movement-time-trial.mp4",
+    kind: "video",
+    poster: "/media/mirabilis-movement-time-trial.jpg",
+    alt: "Mirabilis timed first-person movement course",
+  },
+] as const;
+
 export const metadata: Metadata = {
   title: "Kennedy Nguyen — Software engineer",
   description: "Graphics, AI systems, and interactive software by Kennedy Nguyen.",
@@ -173,6 +209,30 @@ export default function Home() {
               </p>
             </div>
           </article>
+
+          <div className="capture-section">
+            <h3>Latest Mirabilis captures</h3>
+            <div className="capture-grid">
+              {mirabilisCaptures.map((capture) => (
+                <figure className="capture-item" key={capture.src}>
+                  {capture.kind === "video" ? (
+                    <video
+                      src={capture.src}
+                      poster={"poster" in capture ? capture.poster : undefined}
+                      aria-label={capture.alt}
+                      controls
+                      muted
+                      playsInline
+                      preload="metadata"
+                    />
+                  ) : (
+                    <img src={capture.src} alt={capture.alt} loading="lazy" />
+                  )}
+                  <figcaption>{capture.label}</figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>
         </section>
 
         <section className="section" id="work" aria-labelledby="work-title">
