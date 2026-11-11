@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { access, readFile } from "node:fs/promises";
+import { access } from "node:fs/promises";
 import test from "node:test";
 
 async function render() {
@@ -21,19 +21,26 @@ test("server-renders the complete portfolio without an entry gate", async () => 
 
   const html = await response.text();
   assert.match(html, /<title>Kennedy Nguyen — Software engineer<\/title>/i);
-  assert.match(html, /<h1[^>]*>Hi, I(?:&#x27;|&apos;|')m <span>Kenny\.<\/span><\/h1>/);
-  assert.match(html, /href="\/cube-gate\.html"/);
-  assert.doesNotMatch(html, /<iframe|gate-overlay|gate-active|kenny-cube-unlocked/);
+  assert.match(html, /<h1[^>]*>Hi, I(?:&#x27;|&apos;|')m Kenny!<\/h1>/);
+  assert.doesNotMatch(html, /cube-gate|<iframe|gate-overlay|gate-active|kenny-cube-unlocked/);
   assert.equal((html.match(/<h1\b/g) ?? []).length, 1);
-  assert.match(html, /Selected work/);
+  assert.match(html, /class="tiles"/);
   assert.match(html, /SigmaNova/);
   assert.match(html, /Mirabilis/);
   assert.match(html, /3 Minutes to Rage/);
-  assert.match(html, /Currently building/);
-  assert.match(html, /Not always coding/);
+  assert.match(html, /In progress/);
+  assert.match(html, /Off the clock/);
   assert.match(html, /kenny-headshot\.jpg/);
   assert.match(html, /GEarth/);
-  assert.match(html, /gearth-demo\.jpg/);
+  assert.match(html, /KennyCraft/);
+  assert.match(html, /kc-landscape\.jpg/);
+  assert.match(html, /FirstPrinciples/);
+  assert.match(html, /fp-blackhole\.jpg/);
+  assert.match(html, /NVIDIA track/);
+  assert.match(html, /32 KB/);
+  assert.match(html, /Schwarzschild/);
+  assert.match(html, /gearth-ocean\.jpg/);
+  assert.match(html, /gearth-globe\.jpg/);
   assert.match(html, /Knight Hacks IX/);
   assert.match(html, /two NVIDIA DGX Spark systems and an AMD GPU/);
   assert.match(html, /Jolt rigid bodies/);
@@ -50,8 +57,10 @@ test("server-renders the complete portfolio without an entry gate", async () => 
   assert.match(html, /kennedyn216@gmail\.com/);
   assert.match(html, /github\.com\/kennynguyen216/);
   assert.match(html, /linkedin\.com\/in\/kennedynguyen216/);
-  assert.match(html, /Get in touch/);
   assert.match(html, /Skip to content/);
+  assert.match(html, /class="site-nav"/);
+  assert.match(html, /aria-current="page"[^>]*>Showcase</);
+  assert.doesNotMatch(html, /href="\/blog/);
   assert.doesNotMatch(html, /More projects will live here|you@example\.com/);
   assert.doesNotMatch(html, /og:image/);
   assert.doesNotMatch(html, /I make digital work feel human|codex-preview|SkeletonPreview/);
@@ -68,29 +77,4 @@ test("project navigation and media are accessible without autoplay", async () =>
   }
   assert.ok(html.indexOf('id="gearth-title"') < html.indexOf('id="experience-title"'));
   assert.ok(html.indexOf('id="mirabilis-title"') < html.indexOf('id="experience-title"'));
-});
-
-test("the optional cube provides a solvable path and a direct return link", async () => {
-  const gate = await readFile(new URL("../public/cube-gate.html", import.meta.url), "utf8");
-
-  assert.match(gate, /id="bg-canvas"/);
-  assert.match(gate, /id="giveup-btn"/);
-  assert.match(gate, /solve it for me/i);
-  assert.match(gate, /id="continue-btn"/);
-  assert.match(gate, /href="\.\/">&larr; Back to the portfolio/);
-  assert.match(gate, /window\.location\.assign\('\.\/'\)/);
-  assert.match(gate, /window\.location\.replace\('\.\/'\)/);
-  assert.match(gate, /function checkSolved/);
-  assert.match(gate, /id="orientation-gizmo"/);
-  assert.match(gate, /data-view="front"/);
-  assert.match(gate, /id="snap-view-btn"/);
-  assert.match(gate, /function snapToNearest/);
-  assert.match(gate, /function snapToView/);
-  assert.match(gate, /Alt \/ Option \+ drag/);
-  assert.doesNotMatch(gate, /id="orient-btn"/);
-  assert.doesNotMatch(gate, /window\.__spin/);
-  assert.match(gate, /finishing queued moves/);
-  assert.doesNotMatch(gate, /queue\.length >= MAX_ANIMATED_QUEUE\)[\s\S]{0,80}applyInstant/);
-  assert.doesNotMatch(gate, /Math\.abs\(vx\) < 0\.0003 \? 0\.0012/);
-  assert.doesNotMatch(gate, /Math\.max\(-1\.2, Math\.min\(1\.2/);
 });
