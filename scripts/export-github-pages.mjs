@@ -5,21 +5,22 @@ const workerUrl = new URL("../dist/server/index.js", import.meta.url);
 workerUrl.searchParams.set("pages-export", Date.now().toString());
 const { default: worker } = await import(workerUrl.href);
 
-const response = await worker.fetch(
-  new Request("https://kennynguyen216.github.io/", {
-    headers: { accept: "text/html" },
-  }),
-  { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
-  { waitUntil() {}, passThroughOnException() {} },
-);
-
-if (!response.ok) {
-  throw new Error(`Unable to render the portfolio: ${response.status}`);
+async function render(path) {
+  const response = await worker.fetch(
+    new Request(`https://kennynguyen216.github.io${path}`, {
+      headers: { accept: "text/html" },
+    }),
+    { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
+    { waitUntil() {}, passThroughOnException() {} },
+  );
+  if (!response.ok) {
+    throw new Error(`Unable to render ${path}: ${response.status}`);
+  }
+  return response.text();
 }
 
 const clientDir = new URL("../dist/client/", import.meta.url);
-const html = await response.text();
-await writeFile(new URL("index.html", clientDir), html);
+await writeFile(new URL("index.html", clientDir), await render("/"));
 await copyFile(
   new URL("index.html", clientDir),
   new URL("404.html", clientDir),
@@ -38,7 +39,7 @@ for (const file of files) {
   const prefixed = source
     .replaceAll(/(?<!\/portfolio)\/_next\//g, "/portfolio/_next/")
     .replaceAll(/(?<!\/portfolio)\/media\//g, "/portfolio/media/")
-    .replaceAll(/(?<!\/portfolio)\/cube-gate\.html/g, "/portfolio/cube-gate.html");
+    .replaceAll('href="/"', 'href="/portfolio/"');
 
   if (prefixed !== source) await writeFile(filePath, prefixed);
 }
