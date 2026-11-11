@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { HobbyGallery } from "./HobbyGallery";
 import { SiteNav } from "./SiteNav";
 
 type Tile = {
@@ -165,11 +164,6 @@ export default function Home() {
               <li><span>3rd Place</span><span>SASE Fall Hackathon 2025</span></li>
             </ul>
           </article>
-        </section>
-
-        <section id="outside" aria-labelledby="outside-title">
-          <h2 id="outside-title" className="visually-hidden">Off the clock</h2>
-          <HobbyGallery />
         </section>
       </main>
 

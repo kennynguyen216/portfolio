@@ -29,7 +29,7 @@ test("server-renders the complete portfolio without an entry gate", async () => 
   assert.match(html, /Mirabilis/);
   assert.match(html, /3 Minutes to Rage/);
   assert.match(html, /In progress/);
-  assert.match(html, /Off the clock/);
+  assert.doesNotMatch(html, /Off the clock|tiles-hobby/);
   assert.match(html, /kenny-headshot\.jpg/);
   assert.match(html, /GEarth/);
   assert.match(html, /KennyCraft/);
