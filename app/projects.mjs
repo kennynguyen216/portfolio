@@ -87,9 +87,8 @@ export const projects = [
     name: "Mirabilis",
     line: "The C++20/Vulkan engine I'm building",
     image: {
-      src: "/media/mirabilis-bhop-demo.gif",
-      still: "/media/mirabilis-movement-time-trial.jpg",
-      alt: "Source-style strafing and bunny hopping in Mirabilis",
+      src: "/media/mirabilis-after-shadows.png",
+      alt: "The Sponza scene rendered in Mirabilis with textured materials and real-time shadows",
     },
     context: "In progress",
     code: "https://github.com/kennynguyen216/Mirabilis",
