@@ -35,7 +35,12 @@ export default function Home() {
           <img className="headshot" src="/media/kenny-headshot.jpg" alt="Kennedy Nguyen" width="480" height="480" fetchPriority="high" />
           <h1 id="hero-title">Hi, I&apos;m Kenny!</h1>
           <p>I&apos;m a senior in CS at LSU with an interest in computer graphics and AI/ML. I love making cool projects, and I love competing at hackathons.</p>
-          <p>In a 27-day stretch in 2026, my teams earned four first-place finishes across three hackathons. At Knight Hacks IX, GEarth won the BNY and Neon challenges and placed third in the AMD challenge. FirstPrinciples won first overall at GeauxHack, and KennyCraft took first in the NVIDIA track at HackUTD, earning our team two GeForce RTX 5080 GPUs.</p>
+          <p>I went to <strong>3 hackathons in 27 days</strong> and <strong>won at all 3</strong>.</p>
+          <ul className="bio-results">
+            <li>At <strong>Knight Hacks IX</strong>, GEarth placed <strong>1st in BNY</strong>, <strong>1st in Neon</strong>, and <strong>3rd in AMD</strong>.</li>
+            <li>At <strong>GeauxHack</strong>, FirstPrinciples placed <strong>1st overall</strong>.</li>
+            <li>At <strong>HackUTD</strong>, KennyCraft placed <strong>1st in the NVIDIA track</strong> and won <strong>two GeForce RTX 5080 GPUs</strong>.</li>
+          </ul>
           <p>
             Contact me on <a href="https://www.linkedin.com/in/kennedynguyen216" target="_blank" rel="noreferrer">LinkedIn</a>, check out my{" "}
             <a href="https://github.com/kennynguyen216" target="_blank" rel="noreferrer">GitHub</a>, or email{" "}

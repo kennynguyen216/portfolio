@@ -109,6 +109,9 @@ a:hover { text-decoration-color: currentColor; }
 .bio p + p { margin-top: 10px; }
 .bio p { color: var(--muted); }
 .bio p a { color: var(--ink); }
+.bio-results { align-self: stretch; margin: 10px 0; padding-inline-start: 20px; text-align: left; list-style: disc; color: var(--muted); }
+.bio-results li + li { margin-top: 5px; }
+.bio strong { color: var(--ink); font-weight: 650; }
 
 /* Full-bleed tile grid */
 .tiles {
