@@ -35,7 +35,7 @@ export default function Home() {
           <img className="headshot" src="/media/kenny-headshot.jpg" alt="Kennedy Nguyen" width="480" height="480" fetchPriority="high" />
           <h1 id="hero-title">Hi, I&apos;m Kenny!</h1>
           <p>I&apos;m a senior in CS at LSU with an interest in computer graphics and AI/ML. I love making cool projects, and I love competing at hackathons.</p>
-          <p>Over 27 days in 2026, I competed in three hackathons and won at all three. My teams took three sponsor prizes with GEarth at Knight Hacks IX, won with FirstPrinciples at GeauxHack, and took the NVIDIA track with KennyCraft at HackUTD.</p>
+          <p>In a 27-day stretch in 2026, my teams earned four first-place finishes across three hackathons. At Knight Hacks IX, GEarth won the BNY and Neon challenges and placed third in the AMD challenge. FirstPrinciples won first overall at GeauxHack, and KennyCraft took first in the NVIDIA track at HackUTD, earning our team two GeForce RTX 5080 GPUs.</p>
           <p>
             Contact me on <a href="https://www.linkedin.com/in/kennedynguyen216" target="_blank" rel="noreferrer">LinkedIn</a>, check out my{" "}
             <a href="https://github.com/kennynguyen216" target="_blank" rel="noreferrer">GitHub</a>, or email{" "}
@@ -74,10 +74,11 @@ export default function Home() {
           <article>
             <h3>Awards</h3>
             <ul className="awards">
-              <li><span>NVIDIA Track, Winner</span><span>HackUTD 2026</span></li>
-              <li><span>BNY Financial Services Challenge, Winner</span><span>Knight Hacks IX 2026</span></li>
-              <li><span>Best Use of AMD Technologies</span><span>Knight Hacks IX 2026</span></li>
-              <li><span>Best Use of Neon</span><span>Knight Hacks IX 2026</span></li>
+              <li><span>NVIDIA Track, 1st Place</span><span>HackUTD 2026</span></li>
+              <li><span>BNY Financial Services Challenge, 1st Place</span><span>Knight Hacks IX 2026</span></li>
+              <li><span>Best Use of AMD Technologies, 3rd Place</span><span>Knight Hacks IX 2026</span></li>
+              <li><span>Best Use of Neon, 1st Place</span><span>Knight Hacks IX 2026</span></li>
+              <li><span>1st Place Overall</span><span>GeauxHack 2026</span></li>
               <li><span>2nd Place, Advanced Bracket</span><span>WICS Spring Hackathon 2026</span></li>
               <li><span>Best Presentation</span><span>WICS Spring Hackathon 2026</span></li>
               <li><span>3rd Place</span><span>SASE Fall Hackathon 2025</span></li>

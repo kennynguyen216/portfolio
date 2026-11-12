@@ -27,7 +27,7 @@ export const projects = [
     code: "https://github.com/Sweet-Rice/kennycraft-alpha",
     description: [
       "A Minecraft-style voxel game running on one Arty A7-100T FPGA, on a RISC-V SIMD processor with a hardware ray tracer that our team designed during the hackathon. I worked on the game software, written in C to fit the chip's 32 KB of on-chip instruction memory (32,180 bytes of code) and 32 KB of data memory, with 40 bytes to spare. It ray traces the world with one ray per pixel: 405 fps at 160×120 and 106 fps at 320×240 on the 100 MHz core in simulation, and a steady 59.4 fps on the board, where the 60 Hz display is the limit.",
-      "Villagers and a builder contractor are run by NVIDIA Nemotron agents talking to the chip over UART. A bank lets you buy KennyCoin with dollars through Capital One's Nessie API, settled as a token on Solana devnet. Light an obsidian portal to reach the Nether, with lava lakes, glowstone, and a red sky. Won the NVIDIA track.",
+      "Villagers and a builder contractor are run by NVIDIA Nemotron agents talking to the chip over UART. A bank lets you buy KennyCoin with dollars through Capital One's Nessie API, settled as a token on Solana devnet. Light an obsidian portal to reach the Nether, with lava lakes, glowstone, and a red sky. We took first place in the NVIDIA track at HackUTD and won two GeForce RTX 5080 GPUs.",
     ],
     links: [{ label: "Watch the demo", href: "https://www.youtube.com/watch?v=Qakh5g6futU" }],
     images: [{ src: "/media/kc-mobs.jpg", alt: "KennyCraft mobs and chickens in a voxel field" }],
@@ -41,7 +41,7 @@ export const projects = [
     context: "Knight Hacks IX",
     code: "https://github.com/liangricky7/GEarth",
     description: [
-      "A simulated Earth with over 1,000 AI agents across ten fictional countries, where citizens, governments, banks, and businesses make decisions about trade, policy, and diplomacy. Won the BNY Financial Services Challenge, Best Use of AMD Technologies, and Best Use of Neon at Knight Hacks IX. I set up distributed inference across two NVIDIA DGX Spark systems and an AMD GPU, and built tooling to replay saved simulation states without rerunning inference.",
+      "A simulated Earth with over 1,000 AI agents across ten fictional countries, where citizens, governments, banks, and businesses make decisions about trade, policy, and diplomacy. At Knight Hacks IX, we took first in the BNY Financial Services Challenge and Best Use of Neon, and third in Best Use of AMD Technologies. I set up distributed inference across two NVIDIA DGX Spark systems and an AMD GPU, and built tooling to replay saved simulation states without rerunning inference.",
       "On the graphics side, I worked on the C++20/Vulkan viewer that replays each run: a procedural globe with atmosphere, clouds, city lights, and stars; HDR lighting with exposure, bloom, ACES-style tone mapping, and FXAA; sun shadows and physically based glTF materials with BC7 textures; a procedural ocean you can sail or fly over; and a meadow with about a million wind-bent grass blades generated on the GPU every frame.",
     ],
     links: [{ label: "Watch the demo", href: "https://www.youtube.com/watch?v=7h_nXEkdgIM" }],
@@ -59,7 +59,7 @@ export const projects = [
     context: "GeauxHack 2026",
     code: "https://github.com/kennynguyen216/FirstPrinciples",
     description: [
-      "A C++20 game engine for macOS (Metal) and Windows (Vulkan) with a Qt scene editor, an entity component system, hot-reloadable C++ scripts, physics, spatial audio, and peer-to-peer multiplayer with proximity chat. We used it to build Mission Kritikal Ultra, a space trucking racer.",
+      "A C++20 game engine for macOS (Metal) and Windows (Vulkan) with a Qt scene editor, an entity component system, hot-reloadable C++ scripts, physics, spatial audio, and peer-to-peer multiplayer with proximity chat. We used it to build Mission Kritikal Ultra, a space trucking racer that won first overall at GeauxHack.",
       "Its centerpiece is a physically accurate black hole. Light is traced backward through Schwarzschild spacetime, which produces the black shadow at 2.6 times the horizon radius, the photon ring, and the far side of the accretion disk lensed over the top. Each ring of the disk glows as a blackbody at its own temperature, shifted by Doppler and gravitational redshift, and ships orbit by the exact Schwarzschild equations, so orbits precess and anything inside 1.5 radii spirals in.",
     ],
     links: [{ label: "Watch the demo", href: "https://www.youtube.com/watch?v=QMFozthDMLI" }],
