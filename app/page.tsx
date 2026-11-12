@@ -3,11 +3,6 @@ import { ProjectArtwork } from "./ProjectArtwork";
 import { projects } from "./projects.mjs";
 import { SiteNav } from "./SiteNav";
 
-const moreProjects = [
-  { name: "Jarvis", line: "a voice-controlled vision assistant on Arduino hardware", href: "https://github.com/kennynguyen216/Jarvis" },
-  { name: "Alfred", line: "an offline student assistant backed by a local model", href: "https://github.com/kennynguyen216/Alfred-AI-Student-Assistant" },
-];
-
 export const metadata: Metadata = {
   title: "Kennedy Nguyen — Software engineer",
   description: "Vulkan rendering, simulation, and distributed AI systems by Kennedy Nguyen. Explore Mirabilis, GEarth, and more.",
@@ -34,23 +29,18 @@ export default function Home() {
           <img className="headshot" src="/media/kenny-headshot.jpg" alt="Kennedy Nguyen" width="480" height="480" fetchPriority="high" />
           <h1 id="hero-title">Hi, I&apos;m Kenny!</h1>
           <p>I&apos;m a senior in CS at LSU with an interest in computer graphics and AI/ML. I love making cool projects, and I love competing at hackathons.</p>
-          <p>I work as a <strong>Research Software Engineer</strong> at LSU&apos;s Center for Analytics and Research in Transportation Safety, where I build an agent that lets researchers query statewide crash data in plain English. I cut intent-extraction latency by <strong>44%</strong> by instrumenting the .NET workflow and tuning reasoning effort by stage.</p>
           <p>I went to <strong>3 hackathons in 27 days</strong> and <strong>won at all 3</strong>.</p>
           <ul className="bio-results">
             <li>At <strong>Knight Hacks IX</strong>, GEarth placed <strong>1st in BNY</strong>, <strong>1st in Neon</strong>, and <strong>3rd in AMD</strong>.</li>
             <li>At <strong>GeauxHack</strong>, FirstPrinciples placed <strong>1st overall</strong>.</li>
             <li>At <strong>HackUTD</strong>, KennyCraft placed <strong>1st in the NVIDIA track</strong> and won <strong>two GeForce RTX 5080 GPUs</strong>.</li>
           </ul>
+          <p>I work as a <strong>Research Software Engineer</strong> at LSU&apos;s Center for Analytics and Research in Transportation Safety, where I build an agent that lets researchers query statewide crash data in plain English. I cut intent-extraction latency by <strong>44%</strong> by instrumenting the .NET workflow and tuning reasoning effort by stage.</p>
           <p>
             Contact me on <a href="https://www.linkedin.com/in/kennedynguyen216" target="_blank" rel="noreferrer">LinkedIn</a>, check out my{" "}
             <a href="https://github.com/kennynguyen216" target="_blank" rel="noreferrer">GitHub</a>, or email{" "}
             <a href="mailto:kennedyn216@gmail.com">kennedyn216@gmail.com</a>.
           </p>
-          <p>Other projects include {moreProjects.map((project, index) => (
-            <span key={project.name}>
-              <a href={project.href} target="_blank" rel="noreferrer">{project.name}</a>, {project.line}{index < moreProjects.length - 1 ? ", and " : "."}
-            </span>
-          ))}</p>
         </section>
 
         <section id="work" aria-labelledby="work-title">
