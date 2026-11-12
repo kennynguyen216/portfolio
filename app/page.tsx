@@ -41,7 +41,7 @@ export default function Home() {
             </div>
             <div className="bio-group">
               <h2>Research &amp; engineering</h2>
-              <p>I&apos;m a <strong>Software Engineer at CARTS</strong>, where I build an agent that lets researchers query statewide crash data in plain English. I cut intent-extraction latency by <strong>44%</strong> by instrumenting the .NET workflow and tuning reasoning effort by stage.</p>
+              <p>I&apos;m a <strong>Software Developer at CARTS</strong>, where I build AI agents that help transportation engineers analyze statewide crash data using plain-English questions. I reduced the time it takes to interpret a question by <strong>44%</strong>.</p>
               <p>I&apos;m also an <strong>Undergraduate AI/ML Researcher</strong> at LSU&apos;s ATHENA Lab, where I fine-tune and benchmark computer vision models to classify bovid teeth from images.</p>
             </div>
             <p className="bio-contact">
