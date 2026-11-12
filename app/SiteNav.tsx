@@ -31,10 +31,11 @@ export function SiteNav({ current }: { current: Page }) {
   return (
     <nav className="site-nav" aria-label="Primary navigation">
       {current === "showcase" ? (
-        <a href="/" aria-current="page">Showcase</a>
+        <a href="#work" aria-current="page">Showcase</a>
       ) : (
         <a href="/#work">← Go back</a>
       )}
+      {current === "showcase" && <a href="#about">About</a>}
       <button type="button" className="awards-toggle" popoverTarget="awards-panel">Awards</button>
       <section id="awards-panel" className="awards-panel" popover="auto" aria-labelledby="awards-title">
         <div className="awards-heading">
