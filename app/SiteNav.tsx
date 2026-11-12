@@ -19,7 +19,11 @@ const socials = [
 export function SiteNav({ current }: { current: Page }) {
   return (
     <nav className="site-nav" aria-label="Primary navigation">
-      <a href="/" aria-current={current === "showcase" ? "page" : undefined}>Showcase</a>
+      {current === "showcase" ? (
+        <a href="/" aria-current="page">Showcase</a>
+      ) : (
+        <a href="/#work">← Go back</a>
+      )}
       <span className="site-nav-divider" aria-hidden="true" />
       {socials.map((social) => (
         <a key={social.label} className="site-nav-icon" href={social.href} target="_blank" rel="noreferrer" aria-label={social.label}>

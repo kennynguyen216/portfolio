@@ -91,7 +91,7 @@ test("project cards open pages with matching hero artwork, details and links", a
     assert.ok(html.includes(`src="${project.image.src}"`));
     assert.ok(html.includes(transition));
     assert.ok(html.includes(`href="${project.devpost ?? project.code}"`));
-    assert.ok(html.includes('href="/#work"'));
+    assert.match(html, /<nav class="site-nav"[^>]*><a href="\/#work">← Go back<\/a>/);
     for (const pattern of details[project.slug]) assert.match(html, pattern);
     for (const [, asset] of html.matchAll(/(?:src|srcSet|poster)="(\/media\/[^"?]+)"/gi)) {
       await access(new URL(`../public${asset}`, import.meta.url));
