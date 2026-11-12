@@ -1,14 +1,15 @@
 import assert from "node:assert/strict";
 import { access } from "node:fs/promises";
 import test from "node:test";
+import { projects } from "../app/projects.mjs";
 
-async function render() {
+async function render(path = "/") {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
   const { default: worker } = await import(workerUrl.href);
 
   return worker.fetch(
-    new Request("http://localhost/", { headers: { accept: "text/html" } }),
+    new Request(new URL(path, "http://localhost"), { headers: { accept: "text/html" } }),
     { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
     { waitUntil() {}, passThroughOnException() {} },
   );
@@ -28,7 +29,6 @@ test("server-renders the complete portfolio without an entry gate", async () => 
   assert.match(html, /SigmaNova/);
   assert.match(html, /Mirabilis/);
   assert.match(html, /3 Minutes to Rage/);
-  assert.match(html, /In progress/);
   assert.doesNotMatch(html, /Off the clock|tiles-hobby/);
   assert.match(html, /kenny-headshot\.jpg/);
   assert.match(html, /GEarth/);
@@ -37,20 +37,11 @@ test("server-renders the complete portfolio without an entry gate", async () => 
   assert.match(html, /FirstPrinciples/);
   assert.match(html, /fp-blackhole\.jpg/);
   assert.match(html, /NVIDIA track/);
-  assert.match(html, /32 KB/);
-  assert.match(html, /Schwarzschild/);
-  assert.match(html, /gearth-ocean\.jpg/);
   assert.match(html, /gearth-globe\.jpg/);
   assert.match(html, /Knight Hacks IX/);
-  assert.match(html, /two NVIDIA DGX Spark systems and an AMD GPU/);
-  assert.match(html, /Jolt rigid bodies/);
-  assert.match(html, /\.NET 10 C# scripts with live reload/);
   assert.match(html, /Best Use of AMD Technologies/);
   assert.match(html, /Best Use of Neon/);
   assert.match(html, /Financial Services Challenge/);
-  assert.match(html, /mirabilis-after-shadows\.mp4/);
-  assert.match(html, /mirabilis-before-shadows\.png/);
-  assert.match(html, /mirabilis-movement-time-trial\.mp4/);
   assert.match(html, /Research Software Engineer/);
   assert.match(html, /44%/);
   assert.match(html, /WICS Spring Hackathon 2026/);
@@ -75,6 +66,40 @@ test("project navigation and media are accessible without autoplay", async () =>
     assert.match(tag, /\bcontrols\b/);
     assert.doesNotMatch(tag, /\bautoplay\b/i);
   }
-  assert.ok(html.indexOf('id="gearth-title"') < html.indexOf('id="experience-title"'));
-  assert.ok(html.indexOf('id="mirabilis-title"') < html.indexOf('id="experience-title"'));
+});
+
+test("project cards open pages with matching hero artwork, details and links", async () => {
+  const home = await (await render()).text();
+  const details = {
+    "kennycraft": [/32 KB/, /KennyCoin/, /kc-mobs/],
+    "gearth": [/gearth-ocean/, /gearth-globe/, /two NVIDIA DGX Spark systems and an AMD GPU/],
+    "first-principles": [/Schwarzschild/, /fp-cockpit/],
+    "sigmanova": [/ray marcher/, /sigmanova-remnant-still/],
+    "mirabilis": [/In progress/, /Jolt rigid bodies/, /\.NET 10 C# scripts with live reload/, /mirabilis-after-shadows/, /mirabilis-before-shadows/, /mirabilis-movement-time-trial/],
+  };
+
+  for (const project of projects) {
+    const path = `/projects/${project.slug}/`;
+    const transition = `view-transition-name:project-${project.slug}`;
+    assert.ok(home.includes(`href="${path}"`));
+    assert.ok(home.includes(transition));
+
+    const response = await render(path);
+    assert.equal(response.status, 200, path);
+    const html = (await response.text()).replace(/<script\b[\s\S]*?<\/script>/gi, "");
+    assert.ok(html.includes(`<h1>${project.name}</h1>`));
+    assert.ok(html.includes(`src="${project.image.src}"`));
+    assert.ok(html.includes(transition));
+    assert.ok(html.includes(`href="${project.devpost ?? project.code}"`));
+    assert.ok(html.includes('href="/#work"'));
+    for (const pattern of details[project.slug]) assert.match(html, pattern);
+    for (const [, asset] of html.matchAll(/(?:src|srcSet|poster)="(\/media\/[^"?]+)"/gi)) {
+      await access(new URL(`../public${asset}`, import.meta.url));
+    }
+    for (const tag of html.match(/<video\b[^>]*>/g) ?? []) {
+      assert.match(tag, /\bcontrols\b/);
+      assert.doesNotMatch(tag, /\bautoplay\b/i);
+    }
+  }
+  assert.equal((await render("/projects/unknown/")).status, 404);
 });

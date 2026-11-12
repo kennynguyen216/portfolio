@@ -1,5 +1,6 @@
-import { copyFile, readFile, readdir, writeFile } from "node:fs/promises";
+import { copyFile, mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
+import { projects } from "../app/projects.mjs";
 
 const workerUrl = new URL("../dist/server/index.js", import.meta.url);
 workerUrl.searchParams.set("pages-export", Date.now().toString());
@@ -26,6 +27,13 @@ await copyFile(
   new URL("404.html", clientDir),
 );
 
+for (const project of projects) {
+  const path = `projects/${project.slug}/`;
+  const directory = new URL(path, clientDir);
+  await mkdir(directory, { recursive: true });
+  await writeFile(new URL("index.html", directory), await render(`/${path}`));
+}
+
 const textExtensions = new Set([".css", ".html", ".js", ".json"]);
 const files = await readdir(clientDir, { recursive: true, withFileTypes: true });
 
@@ -39,7 +47,7 @@ for (const file of files) {
   const prefixed = source
     .replaceAll(/(?<!\/portfolio)\/_next\//g, "/portfolio/_next/")
     .replaceAll(/(?<!\/portfolio)\/media\//g, "/portfolio/media/")
-    .replaceAll('href="/"', 'href="/portfolio/"');
+    .replaceAll(/href="\/(?=["#]|projects\/)/g, 'href="/portfolio/');
 
   if (prefixed !== source) await writeFile(filePath, prefixed);
 }

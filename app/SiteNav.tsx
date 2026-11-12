@@ -1,4 +1,4 @@
-type Page = "showcase";
+type Page = "showcase" | "project";
 
 const socials = [
   {
