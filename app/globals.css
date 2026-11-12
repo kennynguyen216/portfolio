@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /* Salt & Pepper: #FFFFFF · #D4D4D4 · #B3B3B3 · #2B2B2B
-   Layout: tiny corner marks, a short centered bio, then a full-bleed grid of
+   Layout: a portrait and About section, then a full-bleed grid of
    media tiles captioned "Name  one-liner". */
 :root {
   color-scheme: light;
@@ -98,23 +98,32 @@ a:hover { text-decoration-color: currentColor; }
 .site-nav .site-nav-icon { width: 40px; padding: 0; }
 .site-nav-divider { width: 1px; height: 22px; margin: 0 10px; background: var(--nav-divider); }
 
-/* Centered bio */
+/* About */
 .bio {
-  display: flex; flex-direction: column; align-items: center;
-  width: min(440px, calc(100% - 40px));
-  margin: 0 auto; padding: 128px 0 72px;
-  text-align: center;
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  align-items: start;
+  gap: clamp(24px, 5vw, 72px);
+  width: min(1160px, calc(100% - 64px));
+  margin: 0 auto;
+  padding: 104px 0 56px;
+  font-size: 1rem;
+  line-height: 1.55;
 }
-.headshot { width: 40px; height: 40px; object-fit: cover; border-radius: 50%; margin-bottom: 14px; }
-.bio h1 { margin-bottom: 8px; }
-.bio p + p { margin-top: 10px; }
+.headshot { width: 100%; border-radius: 16px; }
+.bio h1 { margin-bottom: 12px; font-size: clamp(2.25rem, 4.5vw, 4rem); font-weight: 650; line-height: 1.05; letter-spacing: -0.045em; }
+.bio h2 { margin-bottom: 5px; font-size: 1.125rem; font-weight: 650; }
+.bio-group { margin-top: 20px; }
+.bio-group p + p { margin-top: 8px; }
+.bio-contact { margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--nav-divider); }
 .bio p { color: var(--muted); }
 .bio p a { color: var(--ink); }
-.bio-results { align-self: stretch; margin: 10px 0; padding-inline-start: 20px; text-align: left; list-style: disc; color: var(--muted); }
-.bio-results li + li { margin-top: 5px; }
+.bio-results { margin-top: 6px; padding-inline-start: 20px; list-style: disc; color: var(--muted); }
+.bio-results li + li { margin-top: 3px; }
 .bio strong { color: var(--ink); font-weight: 650; }
 
 /* Full-bleed tile grid */
+#work { scroll-margin-top: 76px; }
 .tiles {
   display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 20px 4px;
@@ -161,9 +170,10 @@ a:hover { text-decoration-color: currentColor; }
 .award-group ul { list-style: disc; padding-inline-start: 18px; margin-top: 4px; color: var(--muted); }
 
 @media (max-width: 700px) {
-  .bio { padding: 104px 0 48px; }
+  .bio { grid-template-columns: minmax(0, 1fr); width: calc(100% - 40px); padding: 84px 0 36px; }
+  .headshot { max-width: 320px; }
   .site-nav { top: 12px; font-size: 14px; }
-  .site-nav > :is(a, button) { padding: 0 14px; }
+  .site-nav > :is(a, button) { padding: 0 10px; }
   .site-nav .site-nav-icon { width: 36px; }
   .site-nav-divider { margin: 0 6px; }
   .tiles { grid-template-columns: 1fr; gap: 16px; }
