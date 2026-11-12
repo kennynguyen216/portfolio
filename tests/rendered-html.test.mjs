@@ -26,6 +26,9 @@ test("server-renders the complete portfolio without an entry gate", async () => 
   assert.doesNotMatch(html, /cube-gate|<iframe|gate-overlay|gate-active|kenny-cube-unlocked/);
   assert.equal((html.match(/<h1\b/g) ?? []).length, 1);
   assert.match(html, /class="tiles"/);
+  assert.match(html, /popovertarget="awards-panel">Awards<\/button>/i);
+  assert.match(html, /<section id="work"[^>]*>[\s\S]*?<\/section><\/main>/);
+  assert.doesNotMatch(html, /<footer|class="notes"/);
   assert.match(html, /SigmaNova/);
   assert.match(html, /Mirabilis/);
   assert.match(html, /3 Minutes to Rage/);
@@ -75,6 +78,7 @@ test("project cards open pages with matching hero artwork, details and links", a
     "gearth": [/gearth-ocean/, /gearth-globe/, /two NVIDIA DGX Spark systems and an AMD GPU/],
     "first-principles": [/Schwarzschild/, /fp-cockpit/],
     "sigmanova": [/ray marcher/, /sigmanova-remnant-still/],
+    "3-minutes-to-rage": [/rage meter/, /Best Presentation/],
     "mirabilis": [/In progress/, /Jolt rigid bodies/, /\.NET 10 C# scripts with live reload/, /mirabilis-after-shadows/, /mirabilis-before-shadows/, /mirabilis-movement-time-trial/],
   };
 
@@ -88,7 +92,8 @@ test("project cards open pages with matching hero artwork, details and links", a
     assert.equal(response.status, 200, path);
     const html = (await response.text()).replace(/<script\b[\s\S]*?<\/script>/gi, "");
     assert.ok(html.includes(`<h1>${project.name}</h1>`));
-    assert.ok(html.includes(`src="${project.image.src}"`));
+    if ("src" in project.image) assert.ok(html.includes(`src="${project.image.src}"`));
+    else assert.match(html, /timer-artwork[^>]*>03:00<\/div>/);
     assert.ok(html.includes(transition));
     assert.ok(html.includes(`href="${project.devpost ?? project.code}"`));
     assert.match(html, /<nav class="site-nav"[^>]*><a href="\/#work">← Go back<\/a>/);

@@ -1,5 +1,16 @@
 type Page = "showcase" | "project";
 
+const awards = [
+  { event: "HackUTD 2026", results: ["NVIDIA Track, 1st Place"] },
+  { event: "GeauxHack 2026", results: ["1st Place Overall"] },
+  {
+    event: "Knight Hacks IX 2026",
+    results: ["BNY Financial Services Challenge, 1st Place", "Best Use of Neon, 1st Place", "Best Use of AMD Technologies, 3rd Place"],
+  },
+  { event: "WICS Spring Hackathon 2026", results: ["2nd Place, Advanced Bracket", "Best Presentation"] },
+  { event: "SASE Fall Hackathon 2025", results: ["3rd Place"] },
+];
+
 const socials = [
   {
     label: "GitHub",
@@ -24,6 +35,19 @@ export function SiteNav({ current }: { current: Page }) {
       ) : (
         <a href="/#work">← Go back</a>
       )}
+      <button type="button" className="awards-toggle" popoverTarget="awards-panel">Awards</button>
+      <section id="awards-panel" className="awards-panel" popover="auto" aria-labelledby="awards-title">
+        <div className="awards-heading">
+          <h2 id="awards-title">Awards</h2>
+          <button type="button" popoverTarget="awards-panel" popoverTargetAction="hide">Close</button>
+        </div>
+        {awards.map(({ event, results }) => (
+          <div className="award-group" key={event}>
+            <h3>{event}</h3>
+            <ul>{results.map((result) => <li key={result}>{result}</li>)}</ul>
+          </div>
+        ))}
+      </section>
       <span className="site-nav-divider" aria-hidden="true" />
       {socials.map((social) => (
         <a key={social.label} className="site-nav-icon" href={social.href} target="_blank" rel="noreferrer" aria-label={social.label}>

@@ -6,7 +6,7 @@
  * @property {string} name
  * @property {string} line
  * @property {string} context
- * @property {ProjectImage} image
+ * @property {ProjectImage | { timer: string }} image
  * @property {string[]} description
  * @property {string} code
  * @property {string} [devpost]
@@ -106,5 +106,19 @@ export const projects = [
       { src: "/media/mirabilis-after-shadows.mp4", poster: "/media/mirabilis-after-shadows.png", label: "Real-time shadow walkthrough" },
       { src: "/media/mirabilis-milestone2-demo.mp4", label: "Engine milestone demo" },
     ],
+  },
+  {
+    slug: "3-minutes-to-rage",
+    name: "3 Minutes to Rage",
+    line: "A Unity rage room you power by yelling",
+    context: "WiCS Spring Hackathon 2026",
+    image: { timer: "03:00" },
+    devpost: "https://devpost.com/software/3-minutes-to-rage",
+    code: "https://github.com/liangricky7/tspmo3-3MinutesToRage",
+    description: [
+      "You have three minutes to wreck as much of the room as you can. The microphone feeds a rage meter, so yelling makes you more powerful. Voice commands and a custom breakcore soundtrack add to the chaos.",
+      "We built the game in Unity and C#. I contributed gameplay and player feedback. We placed second in the Advanced Bracket and won Best Presentation at the WiCS Spring Hackathon.",
+    ],
+    images: [],
   },
 ];
