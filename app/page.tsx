@@ -36,6 +36,7 @@ export default function Home() {
             <li>At <strong>HackUTD</strong>, KennyCraft placed <strong>1st in the NVIDIA track</strong> and won <strong>two GeForce RTX 5080 GPUs</strong>.</li>
           </ul>
           <p>I work as a <strong>Research Software Engineer</strong> at LSU&apos;s Center for Analytics and Research in Transportation Safety, where I build an agent that lets researchers query statewide crash data in plain English. I cut intent-extraction latency by <strong>44%</strong> by instrumenting the .NET workflow and tuning reasoning effort by stage.</p>
+          <p>I&apos;m also an <strong>Undergraduate AI/ML Researcher</strong> at LSU&apos;s ATHENA Lab, where I fine-tune and benchmark computer vision models to classify bovid teeth from images.</p>
           <p>
             Contact me on <a href="https://www.linkedin.com/in/kennedynguyen216" target="_blank" rel="noreferrer">LinkedIn</a>, check out my{" "}
             <a href="https://github.com/kennynguyen216" target="_blank" rel="noreferrer">GitHub</a>, or email{" "}
