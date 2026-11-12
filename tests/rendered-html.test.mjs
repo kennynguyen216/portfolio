@@ -26,7 +26,6 @@ test("server-renders the complete portfolio without an entry gate", async () => 
   assert.doesNotMatch(html, /cube-gate|<iframe|gate-overlay|gate-active|kenny-cube-unlocked/);
   assert.equal((html.match(/<h1\b/g) ?? []).length, 1);
   assert.match(html, /class="tiles"/);
-  assert.match(html, /popovertarget="awards-panel">Awards<\/button>/i);
   assert.match(html, /<section id="work"[^>]*>[\s\S]*?<\/section><\/main>/);
   assert.doesNotMatch(html, /<footer|class="notes"/);
   assert.match(html, /SigmaNova/);
@@ -42,18 +41,14 @@ test("server-renders the complete portfolio without an entry gate", async () => 
   assert.match(html, /NVIDIA track/);
   assert.match(html, /gearth-globe\.jpg/);
   assert.match(html, /Knight Hacks IX/);
-  assert.match(html, /Best Use of AMD Technologies/);
-  assert.match(html, /Best Use of Neon/);
-  assert.match(html, /Financial Services Challenge/);
-  assert.match(html, /Research Software Engineer/);
+  assert.match(html, /Software Engineer at CARTS/);
   assert.match(html, /44%/);
-  assert.match(html, /WICS Spring Hackathon 2026/);
   assert.match(html, /kennedyn216@gmail\.com/);
   assert.match(html, /github\.com\/kennynguyen216/);
   assert.match(html, /linkedin\.com\/in\/kennedynguyen216/);
   assert.match(html, /Skip to content/);
   assert.match(html, /class="site-nav"/);
-  assert.match(html, /aria-current="page"[^>]*>Showcase</);
+  assert.match(html, /href="#about">About<\/a><a href="#work">Projects<\/a><a href="\/awards\/">Awards<\/a>/);
   assert.doesNotMatch(html, /href="\/blog/);
   assert.doesNotMatch(html, /More projects will live here|you@example\.com/);
   assert.doesNotMatch(html, /og:image/);
@@ -107,4 +102,17 @@ test("project cards open pages with matching hero artwork, details and links", a
     }
   }
   assert.equal((await render("/projects/unknown/")).status, 404);
+});
+
+test("the Awards link opens a standalone page with all placements", async () => {
+  const response = await render("/awards/");
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  assert.match(html, /<h1>Awards<\/h1>/);
+  assert.match(html, /href="\/awards\/" aria-current="page">Awards/);
+  assert.match(html, /Best Use of AMD Technologies, 3rd Place/);
+  assert.match(html, /Best Use of Neon, 1st Place/);
+  assert.match(html, /BNY Financial Services Challenge, 1st Place/);
+  assert.match(html, /WICS Spring Hackathon 2026/);
+  assert.equal((html.match(/<li>/g) ?? []).length, 8);
 });

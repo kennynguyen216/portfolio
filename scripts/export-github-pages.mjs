@@ -27,8 +27,8 @@ await copyFile(
   new URL("404.html", clientDir),
 );
 
-for (const project of projects) {
-  const path = `projects/${project.slug}/`;
+const pages = ["awards/", ...projects.map((project) => `projects/${project.slug}/`)];
+for (const path of pages) {
   const directory = new URL(path, clientDir);
   await mkdir(directory, { recursive: true });
   await writeFile(new URL("index.html", directory), await render(`/${path}`));
@@ -47,7 +47,7 @@ for (const file of files) {
   const prefixed = source
     .replaceAll(/(?<!\/portfolio)\/_next\//g, "/portfolio/_next/")
     .replaceAll(/(?<!\/portfolio)\/media\//g, "/portfolio/media/")
-    .replaceAll(/href="\/(?=["#]|projects\/)/g, 'href="/portfolio/');
+    .replaceAll(/href="\/(?=["#]|(?:projects|awards)\/)/g, 'href="/portfolio/');
 
   if (prefixed !== source) await writeFile(filePath, prefixed);
 }

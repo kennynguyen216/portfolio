@@ -22,7 +22,7 @@ export default function Home() {
   return (
     <>
       <a className="skip-link" href="#main-content">Skip to content</a>
-      <SiteNav current="showcase" />
+      <SiteNav current="home" />
 
       <main id="main-content" tabIndex={-1}>
         <section id="about" className="bio" aria-labelledby="hero-title">
@@ -41,7 +41,7 @@ export default function Home() {
             </div>
             <div className="bio-group">
               <h2>Research &amp; engineering</h2>
-              <p>I work as a <strong>Research Software Engineer</strong> at LSU&apos;s Center for Analytics and Research in Transportation Safety, where I build an agent that lets researchers query statewide crash data in plain English. I cut intent-extraction latency by <strong>44%</strong> by instrumenting the .NET workflow and tuning reasoning effort by stage.</p>
+              <p>I&apos;m a <strong>Software Engineer at CARTS</strong>, where I build an agent that lets researchers query statewide crash data in plain English. I cut intent-extraction latency by <strong>44%</strong> by instrumenting the .NET workflow and tuning reasoning effort by stage.</p>
               <p>I&apos;m also an <strong>Undergraduate AI/ML Researcher</strong> at LSU&apos;s ATHENA Lab, where I fine-tune and benchmark computer vision models to classify bovid teeth from images.</p>
             </div>
             <p className="bio-contact">
@@ -53,7 +53,7 @@ export default function Home() {
         </section>
 
         <section id="work" aria-labelledby="work-title">
-          <h2 id="work-title" className="visually-hidden">Work</h2>
+          <h2 id="work-title">Projects</h2>
           <div className="tiles">{projects.map((project) => (
             <a className="tile" key={project.slug} href={`/projects/${project.slug}/`}>
               <ProjectArtwork project={project} />
