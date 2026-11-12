@@ -34,9 +34,9 @@ export default function Home() {
               <h2>Hackathons</h2>
               <p>I went to <strong>3 hackathons in 27 days</strong> and <strong>won at all 3</strong>.</p>
               <ul className="bio-results">
-                <li>At <strong>Knight Hacks IX</strong>, GEarth placed <strong>1st in BNY</strong>, <strong>1st in Neon</strong>, and <strong>3rd in AMD</strong>, earning <strong>$6,000+ in prizes</strong>.</li>
+                <li>At <strong>Knight Hacks IX</strong>, GEarth placed <strong>1st in BNY</strong>, <strong>1st in Neon</strong>, and <strong>3rd in AMD</strong>, earning <strong>$6,000+ worth of prizes</strong>.</li>
                 <li>At <strong>GeauxHack</strong>, FirstPrinciples placed <strong>1st overall</strong> and won <strong>a monitor</strong>.</li>
-                <li>At <strong>HackUTD</strong>, KennyCraft placed <strong>1st in the NVIDIA track</strong> and won <strong>two GeForce RTX 5080 GPUs</strong>.</li>
+                <li>At <strong>HackUTD</strong>, KennyCraft placed <strong>1st in the NVIDIA track (1/197 teams)</strong> and won <strong>two GeForce RTX 5080 GPUs</strong>.</li>
               </ul>
             </div>
             <div className="bio-group">
