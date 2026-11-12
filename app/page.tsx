@@ -35,7 +35,7 @@ export default function Home() {
           <img className="headshot" src="/media/kenny-headshot.jpg" alt="Kennedy Nguyen" width="480" height="480" fetchPriority="high" />
           <h1 id="hero-title">Hi, I&apos;m Kenny!</h1>
           <p>I&apos;m a senior in CS at LSU with an interest in computer graphics and AI/ML. I love making cool projects, and I love competing at hackathons.</p>
-          <p>In 2026 I competed in 4 hackathons and came home with 6 awards: the NVIDIA track at HackUTD, three sponsor prizes (BNY, AMD, and Neon) at Knight Hacks IX, and 2nd place plus Best Presentation at the WICS Spring Hackathon.</p>
+          <p>Over 27 days in 2026, I competed in three hackathons. My teams won three sponsor prizes with GEarth at Knight Hacks IX, built FirstPrinciples at GeauxHack, and won the NVIDIA track with KennyCraft at HackUTD.</p>
           <p>
             Contact me on <a href="https://www.linkedin.com/in/kennedynguyen216" target="_blank" rel="noreferrer">LinkedIn</a>, check out my{" "}
             <a href="https://github.com/kennynguyen216" target="_blank" rel="noreferrer">GitHub</a>, or email{" "}
