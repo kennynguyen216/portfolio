@@ -41,8 +41,8 @@ test("server-renders the complete portfolio without an entry gate", async () => 
   assert.match(html, /NVIDIA track/);
   assert.match(html, /gearth-globe\.jpg/);
   assert.match(html, /Knight Hacks IX/);
-  assert.match(html, /Software Developer at CARTS/);
-  assert.match(html, /44%/);
+  assert.match(html, /Center for Analytics &amp; Research in Transportation Safety/);
+  assert.match(html, /ATHENA Lab, where I work with computer vision models/);
   assert.match(html, /kennedyn216@gmail\.com/);
   assert.match(html, /github\.com\/kennynguyen216/);
   assert.match(html, /linkedin\.com\/in\/kennedynguyen216/);

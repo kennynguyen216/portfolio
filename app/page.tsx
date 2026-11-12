@@ -41,8 +41,8 @@ export default function Home() {
             </div>
             <div className="bio-group">
               <h2>Research &amp; engineering</h2>
-              <p>I&apos;m a <strong>Software Developer at CARTS</strong>, where I build AI agents that help transportation engineers analyze statewide crash data using plain-English questions. I reduced the time it takes to interpret a question by <strong>44%</strong>.</p>
-              <p>I&apos;m also an <strong>Undergraduate AI/ML Researcher</strong> at LSU&apos;s ATHENA Lab, where I fine-tune and benchmark computer vision models to classify bovid teeth from images.</p>
+              <p>I&apos;m a <strong>Software Developer</strong> at LSU&apos;s Center for Analytics &amp; Research in Transportation Safety (CARTS), where I build AI agents that help transportation engineers study crash data.</p>
+              <p>I&apos;m also an <strong>Undergraduate AI/ML Researcher</strong> at LSU&apos;s ATHENA Lab, where I work with computer vision models.</p>
             </div>
             <p className="bio-contact">
               Contact me on <a href="https://www.linkedin.com/in/kennedynguyen216" target="_blank" rel="noreferrer">LinkedIn</a>, check out my{" "}
